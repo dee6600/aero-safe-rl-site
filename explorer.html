@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Flight explorer · aero-safe-rl</title>
+  <meta name="description" content="Replay any of the 4,082 evaluation flights of aero-safe-rl in 3D, beside every other condition that flew the same rotor fault.">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='8' cy='8' r='5' fill='none' stroke='%232dd4bf' stroke-width='2.5'/%3E%3Ccircle cx='24' cy='8' r='5' fill='none' stroke='%232dd4bf' stroke-width='2.5'/%3E%3Ccircle cx='8' cy='24' r='5' fill='none' stroke='%23ff5a5f' stroke-width='2.5'/%3E%3Ccircle cx='24' cy='24' r='5' fill='none' stroke='%232dd4bf' stroke-width='2.5'/%3E%3Cpath d='M11 11l10 10M21 11L11 21' stroke='%232dd4bf' stroke-width='2.5'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="css/site.css">
+  <script type="importmap">
+  {
+    "imports": {
+      "three": "https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js",
+      "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/",
+      "@observablehq/plot": "https://cdn.jsdelivr.net/npm/@observablehq/plot@0.6.16/+esm"
+    }
+  }
+  </script>
+  <script type="module" src="js/explorer.js"></script>
+</head>
+<body>
+  <header class="topbar">
+    <div class="wrap">
+      <a class="brand" href="index.html">
+        <svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><circle cx="8" cy="8" r="5"/><circle cx="24" cy="8" r="5"/><circle cx="8" cy="24" r="5" stroke="var(--weak-rotor)"/><circle cx="24" cy="24" r="5"/><path d="M11 11l10 10M21 11L11 21"/></svg>
+        aero-safe-rl
+      </a>
+      <nav class="nav" aria-label="Site">
+        <a href="index.html">The story</a>
+        <a class="optional" href="index.html#results">Results</a>
+        <a href="explorer.html" aria-current="page">Flight explorer</a>
+        <a class="optional" href="https://github.com/dee6600/aero-safe-rl">Code</a>
+      </nav>
+      <button class="icon-btn" type="button" data-theme-toggle></button>
+    </div>
+  </header>
+
+  <main class="wrap" style="padding-top:32px;padding-bottom:48px">
+    <div class="section-head" style="margin-bottom:20px">
+      <span class="eyebrow">Flight explorer</span>
+      <h1 style="font-size:clamp(1.8rem,3.4vw,2.6rem);margin-top:10px">Watch any evaluation flight</h1>
+      <p>Every flight here was flown by the real PX4 autopilot in Gazebo and logged ten times a second. Pick one and it
+        replays beside every other condition that flew the same rotor fault, lined up at the moment the fault began.</p>
+    </div>
+
+    <div class="tabs" id="featured" role="tablist" aria-label="Featured flights"></div>
+
+    <div class="explorer-layout">
+      <div class="panel">
+        <h2 id="replay-title">Loading…</h2>
+        <p class="small ink-2" id="replay-sub" style="margin-bottom:12px"></p>
+        <div id="viewer"></div>
+        <div id="player"></div>
+        <div id="timelines"></div>
+      </div>
+      <div class="panel">
+        <h2>This flight</h2>
+        <dl class="info-grid" id="info"></dl>
+        <h2 style="margin-top:20px">Everything that flew this fault</h2>
+        <p class="small muted" style="margin-bottom:6px">Tick to show a flight in 3D; pick one for the motor and detector timelines.</p>
+        <div class="scroll-x" id="legend"></div>
+      </div>
+    </div>
+
+    <div class="panel" style="margin-top:24px">
+      <div style="display:flex;justify-content:space-between;align-items:baseline;gap:12px;flex-wrap:wrap">
+        <h2>All flights</h2>
+        <span class="small muted" id="count"></span>
+      </div>
+      <div class="filters" id="filters"></div>
+      <div class="table-wrap">
+        <table class="data flight-table">
+          <thead><tr><th>Condition</th><th>Policy</th><th>Rotor weakened by</th><th>Fault</th><th>Outcome</th><th>Touchdown</th><th>Length</th></tr></thead>
+          <tbody id="rows"></tbody>
+        </table>
+      </div>
+      <div class="pager">
+        <button class="btn small" type="button" id="prev">Previous</button>
+        <span id="page"></span>
+        <button class="btn small" type="button" id="next">Next</button>
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    <div class="wrap">
+      <span>aero-safe-rl · every number comes from the project's <code>results/</code> files</span>
+      <a href="index.html">Back to the story</a>
+    </div>
+  </footer>
+</body>
+</html>

@@ -1,0 +1,364 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>aero-safe-rl · recovering a drone from a weak motor</title>
+  <meta name="description" content="A recovery policy trained on 16,384 simulated drones in Isaac Sim, tested inside the real PX4 autopilot on 4,082 flights with a weakened rotor. Results, honest limits, and every flight replayable in 3D.">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='8' cy='8' r='5' fill='none' stroke='%232dd4bf' stroke-width='2.5'/%3E%3Ccircle cx='24' cy='8' r='5' fill='none' stroke='%232dd4bf' stroke-width='2.5'/%3E%3Ccircle cx='8' cy='24' r='5' fill='none' stroke='%23ff5a5f' stroke-width='2.5'/%3E%3Ccircle cx='24' cy='24' r='5' fill='none' stroke='%232dd4bf' stroke-width='2.5'/%3E%3Cpath d='M11 11l10 10M21 11L11 21' stroke='%232dd4bf' stroke-width='2.5'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="css/site.css">
+  <script type="importmap">
+  {
+    "imports": {
+      "three": "https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js",
+      "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/",
+      "@observablehq/plot": "https://cdn.jsdelivr.net/npm/@observablehq/plot@0.6.16/+esm"
+    }
+  }
+  </script>
+  <script type="module" src="js/story.js"></script>
+</head>
+<body>
+  <header class="topbar">
+    <div class="wrap">
+      <a class="brand" href="index.html">
+        <svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><circle cx="8" cy="8" r="5"/><circle cx="24" cy="8" r="5"/><circle cx="8" cy="24" r="5" stroke="var(--weak-rotor)"/><circle cx="24" cy="24" r="5"/><path d="M11 11l10 10M21 11L11 21"/></svg>
+        aero-safe-rl
+      </a>
+      <nav class="nav" aria-label="Site">
+        <a class="optional" href="#problem">The problem</a>
+        <a class="optional" href="#how">How it works</a>
+        <a href="#results">Results</a>
+        <a class="optional" href="#limits">Limits</a>
+        <a href="explorer.html">Flight explorer</a>
+      </nav>
+      <button class="icon-btn" type="button" data-theme-toggle></button>
+    </div>
+  </header>
+
+  <main>
+    <!-- ============================================================ hero -->
+    <section class="hero">
+      <div class="wrap">
+        <div class="hero-grid">
+          <div>
+            <span class="eyebrow">Drone fault recovery · PX4 + Isaac Sim</span>
+            <h1 style="margin-top:16px">A motor weakens. PX4 doesn't notice. <span class="accent">A learned policy flies it home.</span></h1>
+            <p class="lede">A quadcopter loses thrust on one rotor in the middle of a mission. This project trained a recovery
+              policy on <b data-num="training:num_envs.0|int"></b> simulated drones at once in NVIDIA Isaac Sim, then tested it
+              where it counts: inside the real PX4 autopilot, on <b id="n-analysed"></b> evaluated flights in Gazebo.</p>
+            <div class="actions">
+              <a class="btn primary" href="explorer.html">Watch the flights</a>
+              <a class="btn" href="#results">See the results</a>
+            </div>
+          </div>
+          <figure class="figure">
+            <div id="hero-viewer"></div>
+            <figcaption id="hero-caption"></figcaption>
+          </figure>
+        </div>
+        <div class="stats">
+          <div class="stat"><div class="value" data-num="m10:comparisons.0.result.a.rate|pct"></div>
+            <div class="label">of missions finished by the learned policy when a rotor is 20–35% weaker</div>
+            <div class="sub">rule-based controller: <span data-num="m10:comparisons.0.result.b.rate|pct"></span></div></div>
+          <div class="stat"><div class="value"><span data-num="m10:comparisons.4.result.difference|pts"></span> points</div>
+            <div class="label">more missions finished right below the physics limit, 40% weaker</div>
+            <div class="sub"><span data-num="m10:comparisons.4.result.a.rate|pct"></span> against
+              <span data-num="m10:comparisons.4.result.b.rate|pct"></span> with no recovery</div></div>
+          <div class="stat"><div class="value"><span id="n-holds"></span> of <span id="n-comparisons"></span></div>
+            <div class="label">comparisons fixed before the first flight hold up</div>
+            <div class="sub">the ones that don't are reported too</div></div>
+          <div class="stat"><div class="value" id="n-analysed-2"></div>
+            <div class="label">flights analysed, all flown by PX4 in Gazebo</div>
+            <div class="sub"><span id="n-planned"></span> planned, in <span id="n-runs"></span> runs</div></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================ the problem -->
+    <section id="problem" class="alt">
+      <div class="wrap">
+        <div class="section-head">
+          <span class="eyebrow">The problem</span>
+          <h2 style="margin-top:12px">A weak rotor is a quiet failure</h2>
+          <p>Propellers chip, motors wear, connectors loosen. The rotor keeps spinning, only weaker. PX4, the open-source
+            autopilot flown here, keeps the drone level by driving that rotor harder, and its own failure detector stays
+            silent: it raised nothing on any of the 178 weak-fault flights in this project's fault dataset
+            (<a href="https://github.com/dee6600/aero-safe-rl/blob/main/docs/fault_dataset.md">details</a>).</p>
+        </div>
+        <div class="card">
+          <div class="severity-lab">
+            <div>
+              <label for="severity" class="small muted">How much thrust has the back-left rotor lost?</label>
+              <div class="big-number" id="sev-value"></div>
+              <input id="severity" type="range" min="0" max="8" step="1" value="4" aria-describedby="sev-verdict">
+              <div class="zone" aria-hidden="true"><div class="z1">flies on</div><div class="z2">window</div><div class="z3">comes down</div></div>
+              <p class="verdict-line" id="sev-verdict"></p>
+            </div>
+            <div>
+              <div class="thrust" id="thrust" aria-hidden="true"></div>
+              <div class="thrust-names"><span>front right</span><span>back left</span><span>front left</span><span>back right</span></div>
+              <p class="note" style="margin-top:10px">Each bar is the most thrust a rotor can still give. Hovering level takes about 59%
+                from each, so once the weak rotor drops below the line (about 41% lost) no controller can hold the drone
+                level (<a href="https://github.com/dee6600/aero-safe-rl/blob/main/docs/recovery_baseline.md">derivation</a>).</p>
+            </div>
+          </div>
+          <h3 style="margin-top:20px">How those flights ended, in PX4</h3>
+          <div id="sev-outcomes"></div>
+          <div class="outcome-key small ink-2" id="outcome-key"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================ how it works -->
+    <section id="how">
+      <div class="wrap">
+        <div class="section-head">
+          <span class="eyebrow">How it works</span>
+          <h2 style="margin-top:12px">PX4 flies the drone. The policy is the navigator.</h2>
+          <p>Nothing inside PX4 is changed. A fault detector reads its telemetry, and a recovery policy turns that into
+            three high-level commands. It never touches a motor.</p>
+        </div>
+        <div class="pipeline">
+          <div class="pipe-step fault"><span class="rate">in Gazebo</span><h3>Rotor-fault plugin</h3>
+            <p>Weakens one rotor, suddenly or over a few seconds, at a random moment of the mission.</p></div>
+          <div class="pipe-step"><span class="rate">250–1000 times a second</span><h3>PX4 autopilot</h3>
+            <p>Stock and unmodified. Mixes the motors and keeps the drone level, as on a real flight controller.</p></div>
+          <div class="pipe-step"><span class="rate">10 times a second</span><h3>Telemetry over ROS 2</h3>
+            <p>Attitude, body rates, motor outputs and position, exactly as PX4 publishes them.</p></div>
+          <div class="pipe-step ours"><span class="rate">10 times a second</span><h3>Fault detector</h3>
+            <p>Five small neural networks reading the last few seconds: is there a fault, which rotor, how weak.</p></div>
+          <div class="pipe-step ours"><span class="rate"><span data-num="site:action_spec.decisions_per_s"></span> decisions a second</span><h3>Recovery policy</h3>
+            <p>Trained with reinforcement learning. Sees the telemetry and the detector's estimate, never the true fault.</p></div>
+        </div>
+        <div class="pipe-return">
+          <b>Back to PX4 as ordinary setpoints:</b>
+          <span class="cmds">
+            <span class="chip">speed: <span id="cmd-speed"></span></span>
+            <span class="chip">altitude: <span id="cmd-alt"></span></span>
+            <span class="chip">land now, and it can't be undone</span>
+          </span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================ two simulators -->
+    <section id="simulators" class="alt">
+      <div class="wrap">
+        <div class="section-head">
+          <span class="eyebrow">Two simulators</span>
+          <h2 style="margin-top:12px">Train in the gym, sit the exam in PX4</h2>
+          <p>Reinforcement learning needs millions of flights, and PX4 in Gazebo flies one drone in real time. So the policy
+            trains in Isaac Sim, where <span data-num="training:num_envs.0|int"></span> drones fly at once on one graphics card
+            against a PyTorch copy of PX4's controller that passes all 16 agreement checks with the real one
+            (<a href="https://github.com/dee6600/aero-safe-rl/blob/main/docs/isaac_env.md">details</a>). The two sides
+            share only files. Every reported number comes from PX4.</p>
+        </div>
+        <figure class="figure media-card">
+          <img src="media/architecture.svg" alt="Architecture: Isaac Lab trains the recovery policy on thousands of parallel drones; the two environments exchange only files; the PX4-in-the-loop stack of Gazebo, stock PX4, ROS 2, the fault detector and the recovery policy produces every reported number." loading="lazy">
+        </figure>
+        <div class="grid-2" style="margin-top:28px" id="clips"></div>
+      </div>
+    </section>
+
+    <!-- ============================================================ results -->
+    <section id="results">
+      <div class="wrap">
+        <div class="section-head">
+          <span class="eyebrow">Results</span>
+          <h2 style="margin-top:12px">What <span id="n-analysed-3"></span> flights say</h2>
+          <p>Every condition flew the same schedule of faults (the same rotor, severity and moment, drawn once from seed
+            <span data-num="site:build.sweep_seed"></span>), so any two conditions can be compared fault by fault. Rates carry
+            95% intervals. Ten comparisons were written down before the first flight.</p>
+        </div>
+
+        <div class="chart-card">
+          <h3>How flights ended, by how weak the rotor was</h3>
+          <p class="takeaway">The learned policy finishes almost every mild-fault mission, and some right below the physics
+            limit where the others finish almost none. Past the limit, everything comes down.</p>
+          <div class="chart-controls" id="cond-toggles"></div>
+          <div class="facets">
+            <div class="chart"><h3 class="small ink-2">Finished the mission</h3><div id="ch-success"></div></div>
+            <div class="chart"><h3 class="small ink-2">Crashed</h3><div id="ch-crash"></div></div>
+          </div>
+          <p class="source">Dots are rates, bars their 95% intervals; hover for flight counts. Source: <code>results/m10/results.json</code>, <code>main</code>.</p>
+        </div>
+
+        <div class="chart-card">
+          <h3>Ten comparisons fixed before flying: <span id="n-holds-2"></span> hold</h3>
+          <p class="takeaway">A difference holds when its whole 95% interval sits on one side of zero. All three that hold are about
+            finishing the mission; none of the crash comparisons does.</p>
+          <div id="ch-comparisons"></div>
+          <p class="source">Difference in percentage points, first condition minus second. Source: <code>comparisons</code>.</p>
+        </div>
+
+        <div class="grid-2" style="margin-top:24px">
+          <div class="chart-card" style="margin:0">
+            <h3>Does the fault detector matter?</h3>
+            <p class="takeaway">Barely. A perfect detector, a late one and none at all give the same rates. On the identical
+              fault, the policy's flight ends the same way with a perfect detector
+              <b data-num="m10:detector_use.c5.same_outcome|pct"></b> of the time, and with no detector
+              <b data-num="m10:detector_use.c6.same_outcome|pct"></b>.</p>
+            <div class="chart"><h3 class="small ink-2">Finished, rotor 40% weaker</h3><div id="ch-delay-success"></div></div>
+            <div class="chart"><h3 class="small ink-2">Crashed, rotor 45% weaker</h3><div id="ch-delay-crash"></div></div>
+            <p class="source">Source: <code>delay_curve</code>, <code>detector_use</code>.</p>
+          </div>
+          <div class="chart-card" style="margin:0">
+            <h3>Did Isaac Sim predict PX4?</h3>
+            <p class="takeaway">Mostly. Isaac's rate falls inside PX4's interval in
+              <b><span data-num="m10:transfer_agreement.mission_success.agree"></span> of <span data-num="m10:transfer_agreement.mission_success.cells"></span></b>
+              cells for finishing and <b><span data-num="m10:transfer_agreement.crash.agree"></span> of <span data-num="m10:transfer_agreement.crash.cells"></span></b>
+              for crashing. Where it misses, PX4 was kinder.</p>
+            <div class="facets" style="grid-template-columns:repeat(auto-fit,minmax(220px,1fr))">
+              <div class="chart"><h3 class="small ink-2">Finished</h3><div id="ch-transfer-success"></div></div>
+              <div class="chart"><h3 class="small ink-2">Crashed</h3><div id="ch-transfer-crash"></div></div>
+            </div>
+            <p class="source">One dot per policy and severity; hollow = outside the PX4 interval. Source: <code>transfer</code>.</p>
+          </div>
+        </div>
+
+        <div class="grid-2" style="margin-top:24px">
+          <div class="chart-card" style="margin:0">
+            <h3>How hard it came down</h3>
+            <p class="takeaway">Every recovery method lands more softly than PX4 alone at 40%. From 45% up, every method's
+              median is past the crash line.</p>
+            <div class="chart" id="ch-touchdown"></div>
+            <p class="source">Median touchdown speed of flights that came down. Source: <code>descriptive</code>.</p>
+          </div>
+          <div class="chart-card" style="margin:0">
+            <h3>Training in Isaac Sim</h3>
+            <p class="takeaway">Three training seeds, each <span data-num="training:updates.train_v3_seed_1"></span> updates on
+              <span data-num="training:num_envs.0|int"></span> drones. Their curves end within a few points of each other, yet on PX4
+              at 40% they finish <b data-num="m10:main.c4.0.40.mission_success.per_seed.v3_seed_1|pct"></b>,
+              <b data-num="m10:main.c4.0.40.mission_success.per_seed.v3_seed_2|pct"></b> and
+              <b data-num="m10:main.c4.0.40.mission_success.per_seed.v3_seed_3|pct"></b>. A training curve alone does not say which policy will do best.</p>
+            <div class="chart" id="ch-training"></div>
+            <p class="source"><span class="tag train">Isaac Lab training curve, not a result</span> Source: <code>results/m9_train/*/metrics.csv</code>.</p>
+          </div>
+        </div>
+
+        <div class="grid-3" style="margin-top:24px">
+          <div class="card"><h3>More than flying slower?</h3>
+            <p class="ink-2">Holding the policy's own average commands for the whole flight finishes
+              <b data-num="m10:fixed_setting.cells.0.40.mission_success.rate|pct"></b> at 40%, against
+              <b data-num="m10:main.c4.0.40.mission_success.rate|pct"></b> for the policy. Its gain comes from reacting in flight.</p></div>
+          <div class="card"><h3>Longer training</h3>
+            <p class="ink-2">One policy trained for 600 updates crashes <b data-num="m10:single_policies.v4_seed_1.against.c2.crash.a.rate|pct"></b>
+              at 35–50%, against <b data-num="m10:single_policies.v4_seed_1.against.c2.crash.b.rate|pct"></b> with no recovery:
+              <span data-num="m10:single_policies.v4_seed_1.against.c2.crash|diff"></span>. The only one that cuts crashes.</p></div>
+          <div class="card"><h3>No panic on healthy flights</h3>
+            <p class="ink-2">The learned policy commanded a landing on <b><span data-num="m10:healthy_landings.c4.k"></span> of
+              <span data-num="m10:healthy_landings.c4.n"></span></b> healthy flights. A recovery method that lands good drones is worse than none.</p></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================ featured -->
+    <section id="featured" class="alt">
+      <div class="wrap">
+        <div class="section-head">
+          <span class="eyebrow">Featured flights</span>
+          <h2 style="margin-top:12px">Five flights worth watching</h2>
+          <p>Picked by rules written down before any replay was viewed, so they show what the data holds rather than what
+            looks best. Each says how many flights qualified.</p>
+        </div>
+        <div class="tabs" id="feature-tabs" role="tablist" aria-label="Featured flights"></div>
+        <p class="ink-2" id="feature-rule" style="max-width:860px"></p>
+        <div class="grid-2" style="grid-template-columns:minmax(0,1.35fr) minmax(0,1fr)">
+          <div><div id="feature-viewer"></div><div id="feature-player"></div></div>
+          <div id="feature-timelines"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================ limits -->
+    <section id="limits">
+      <div class="wrap">
+        <div class="section-head">
+          <span class="eyebrow">Honest limits</span>
+          <h2 style="margin-top:12px">What it does not do</h2>
+          <p>A method that wins everywhere mostly means it was not tested hard enough. These are the results that did not go
+            the policy's way.</p>
+        </div>
+        <div class="limits">
+          <div class="card limit"><h3>It does not reduce crashes</h3>
+            <p class="ink-2">With the rotor 40–50% weaker the learned policy crashes <b data-num="m10:comparisons.2.result.a.rate|pct"></b>,
+              no recovery <b data-num="m10:comparisons.2.result.b.rate|pct"></b>, rule-based <b data-num="m10:comparisons.3.result.b.rate|pct"></b>.
+              Neither difference holds.</p></div>
+          <div class="card limit"><h3>At mild faults it only matches doing nothing</h3>
+            <p class="ink-2">PX4 alone finishes <b data-num="m10:comparisons.1.result.b.rate|pct"></b> of those missions; the policy
+              <b data-num="m10:comparisons.1.result.a.rate|pct"></b>. Its big win is over the rule-based controller, not over PX4.</p></div>
+          <div class="card limit"><h3>The detector makes no measurable difference</h3>
+            <p class="ink-2">With perfect fault information the policy finishes <b data-num="m10:comparisons.8.result.a.rate|pct"></b> at 40%;
+              with the real detector <b data-num="m10:comparisons.8.result.b.rate|pct"></b>. It raises the alarm on almost every
+              fault, and the policy barely reacts to it.</p></div>
+          <div class="card limit"><h3>Past the limit, everyone comes down hard</h3>
+            <p class="ink-2">At 45%, the median touchdown is <b id="td-45"></b>, above the
+              <span data-num="site:outcome_spec.crash_touchdown_speed_m_s"></span> m/s crash line for every method. Physics wins there.</p></div>
+          <div class="card limit"><h3>Isaac is not always right</h3>
+            <p class="ink-2"><b id="transfer-miss"></b> finishing cells fall outside PX4's interval, nearly all at 40%, where PX4
+              finished more missions than Isaac predicted.</p></div>
+          <div class="card limit"><h3>Four flights never got their fault</h3>
+            <p class="ink-2">Found while building this site: in 4 flights the fault never began. Re-flown with the fault applied,
+              three ended the same way and one crashed; no verdict changes
+              (<a href="https://github.com/dee6600/aero-safe-rl/blob/main/docs/experiment_results.md#found-later-m12-2026-09-27-four-flights-whose-fault-never-began">details</a>).</p></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================ generalization -->
+    <section id="generalization" class="alt">
+      <div class="wrap">
+        <div class="section-head">
+          <span class="eyebrow">Generalization</span>
+          <h2 style="margin-top:12px">Where it stops working</h2>
+          <p><span id="n-m11"></span> more flights in <span id="n-settings"></span> settings the policy never trained on. It is never
+            worse than no recovery on mild faults or crashes. Its edge right below the limit survives some shifts and vanishes in others.</p>
+        </div>
+        <div class="chart-card">
+          <h3>Finishing right below the limit: learned against no recovery</h3>
+          <div id="ch-generalization"></div>
+          <p class="source">Each setting's pre-registered check that the learned policy finishes more missions than no recovery right below the limit (settings that tested only "not worse" are left out). Source: <code>results/m11/results.json</code>, <code>settings</code>.</p>
+        </div>
+        <p class="ink-2" style="margin-top:18px;max-width:860px">The detector does not generalize either: in 2 newtons of wind it raised
+          an alarm on <b><span data-num="m11:settings.s6.healthy.c4.with_alarm"></span> of <span data-num="m11:settings.s6.healthy.c4.n"></span></b>
+          healthy flights, against <span data-num="m11:m10_healthy_alarm.with_alarm"></span> of <span data-num="m11:m10_healthy_alarm.n"></span>
+          without wind. The policy still landed none of them.</p>
+      </div>
+    </section>
+
+    <!-- ============================================================ engineering -->
+    <section id="engineering">
+      <div class="wrap">
+        <div class="section-head">
+          <span class="eyebrow">Engineering</span>
+          <h2 style="margin-top:12px">Built to be trusted</h2>
+        </div>
+        <div class="grid-3">
+          <div class="card"><h3>One simulator per drone</h3><p class="ink-2">Every worker gets its own Gazebo server, clock and
+            identity file. Nobody shares a world, so one crash never poisons another flight.</p></div>
+          <div class="card"><h3><span id="n-planned-all"></span> planned flights</h3><p class="ink-2">Flown on a laptop and
+            spot cloud machines, two simulators each. <span id="n-lost"></span> were lost to worker restarts and are reported,
+            not hidden.</p></div>
+          <div class="card"><h3>Frozen before flying</h3><p class="ink-2">Each sweep file was fingerprinted before its first flight;
+            changing it means a new version, never an edit. Trials ran on their own seeds first.</p></div>
+        </div>
+        <div style="margin-top:44px;display:flex;flex-wrap:wrap;gap:12px;align-items:center">
+          <a class="btn primary" href="explorer.html">Explore every flight</a>
+          <a class="btn" href="https://github.com/dee6600/aero-safe-rl">Read the code</a>
+          <a class="btn" href="https://github.com/dee6600/aero-safe-rl#-the-bug-bestiary">The bug bestiary</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="wrap">
+      <span>aero-safe-rl · evaluation sweep version <span data-num="site:build.sweep_version"></span> ·
+        generalization version <span data-num="site:build.generalization_version"></span> · built from commit
+        <code data-num="site:build.commit"></code> on <span data-num="site:build.date"></span></span>
+      <span>Every number on this page is read from the project's <code>results/</code> files.</span>
+    </div>
+  </footer>
+</body>
+</html>
