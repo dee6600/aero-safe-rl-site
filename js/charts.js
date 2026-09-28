@@ -208,24 +208,111 @@ export function touchdown(el, m10, site) {
 export function training(el, curves, site) {
   return () => {
     const colour = conditionColour(site, "c4");
-    const runs = ["train_v3_seed_1", "train_v3_seed_2", "train_v3_seed_3"].filter((r) => curves.runs[r]);
-    const rows = runs.flatMap((r, i) => curves.runs[r].update.map((u, j) => ({
-      run: r, seed: i + 1, u, v: curves.runs[r].success_edge[j],
+    const grey = token("--muted");
+    const seed = (r) => Number(r.split("_").pop());
+    const runs = Object.keys(curves.runs).filter((r) => r.startsWith("train_v3_seed_")).sort((a, b) => seed(a) - seed(b));
+    const flown = (r) => seed(r) <= 3;       // M10 flew seeds 1-3; 4-10 were trained for the paper's seed check
+    const rows = runs.flatMap((r) => curves.runs[r].update.map((u, j) => ({
+      run: r, u, v: curves.runs[r].success_edge[j],
     })).filter((d) => d.v != null));
-    const dash = [null, "6 4", "2 3"];
+    const dash = { 1: null, 2: "6 4", 3: "2 3" };
     const key = document.createElement("div");
     key.className = "timelines";
-    key.innerHTML = `<div class="track-title">${runs.map((r, i) => `<span class="key"><svg width="22" height="6"><line x1="0" x2="22" y1="3" y2="3" stroke="${colour}" stroke-width="2" stroke-dasharray="${dash[i] ?? ""}"/></svg>training seed ${i + 1}</span>`).join("")}</div>`;
+    const line = (c, d = "") => `<svg width="22" height="6"><line x1="0" x2="22" y1="3" y2="3" stroke="${c}" stroke-width="2" stroke-dasharray="${d}"/></svg>`;
+    const others = runs.filter((r) => !flown(r)).length;
+    key.innerHTML = `<div class="track-title">${runs.filter(flown).map((r) => `<span class="key">${line(colour, dash[seed(r)] ?? "")}flown seed ${seed(r)}</span>`).join("")}` +
+      (others ? `<span class="key">${line(grey)}${others} more seeds, Isaac only</span>` : "") + "</div>";
+    const smooth = (r, stroke, strokeWidth, extra = {}) => Plot.line(rows.filter((d) => d.run === r),
+      Plot.windowY({ k: 9, anchor: "middle" }, { x: "u", y: "v", stroke, strokeWidth, ...extra }));
     return [key, Plot.plot({
       ...base(el, { height: 250, marginRight: 16 }),
       x: { label: "training update →" },
       y: { domain: [0, 1], label: "↑ finished, rotor 35–45% weaker (Isaac)", tickFormat: (d) => `${pct0(d)}%`, ticks: 5 },
       marks: [
         grid(),
-        ...runs.map((r, i) => Plot.line(rows.filter((d) => d.run === r), Plot.windowY({ k: 9, anchor: "middle" },
-          { x: "u", y: "v", stroke: colour, strokeWidth: 1.8, strokeDasharray: dash[i] }))),
+        ...runs.filter((r) => !flown(r)).map((r) => smooth(r, grey, 1.1, { strokeOpacity: 0.7 })),
+        ...runs.filter(flown).map((r) => smooth(r, colour, 1.8, { strokeDasharray: dash[seed(r)] })),
       ],
     })];
+  };
+}
+
+// ------------------------------------------------------------ seed spread (Isaac)
+
+/** One dot per training seed on the two measures the seed check reads;
+ *  the three flown on PX4 in the learned policy's colour, a tick at each
+ *  group's mean (results/m13/results.json, isaac.seed_spread). */
+export function seedSpread(el, m13, site) {
+  return () => {
+    const sp = m13.isaac?.seed_spread;
+    if (!sp?.seeds || !sp.flown) return null;
+    const flownSeeds = new Set(Object.keys(sp.flown_ranks ?? {}));
+    const measures = [["success_040", "finished, rotor 40% weaker"], ["crash_040_050", "crashed, rotor 40–50% weaker"]];
+    const rows = measures.flatMap(([m, label]) => Object.entries(sp.seeds).map(([k, v]) => ({
+      k, label, v: v[m], flown: flownSeeds.has(k),
+    })));
+    const means = measures.flatMap(([m, label]) => [
+      { label, v: sp.all[m], who: `all ${Object.keys(sp.seeds).length} seeds` }, { label, v: sp.flown[m], who: "the three flown" }]);
+    const colour = conditionColour(site, "c4");
+    return Plot.plot({
+      ...base(el, { height: 150, marginLeft: 190, marginRight: 16 }),
+      x: { domain: [0, 1], tickFormat: (d) => `${pct0(d)}%`, label: "Isaac score →", ticks: 5 },
+      y: { domain: measures.map(([, l]) => l), label: null },
+      marks: [
+        Plot.gridX({ stroke: token("--grid"), strokeOpacity: 1 }),
+        Plot.tickX(means, { y: "label", x: "v", stroke: (d) => (d.who.startsWith("all") ? token("--muted") : colour),
+          strokeWidth: 2, title: (d) => `${d.who}: ${pct(d.v)}` }),
+        Plot.dot(rows, { y: "label", x: "v", r: 5, fill: (d) => (d.flown ? colour : token("--muted")),
+          stroke: token("--surface"), strokeWidth: 1.2, title: (d) => `seed ${d.k}${d.flown ? " (flown on PX4)" : ""}: ${pct(d.v)}` }),
+      ],
+    });
+  };
+}
+
+// ------------------------------------------------------------ input blanking (Isaac)
+
+export const INPUT_GROUPS = {
+  none: "nothing blanked", attitude: "attitude", rates_accel: "body rates and acceleration", velocity: "velocity",
+  altitude: "altitude", position_error: "position error", attitude_rates_accel: "attitude, rates and acceleration",
+  flight_state: "all flight-state inputs", detector: "fault detector", mission_progress: "mission progress",
+  previous_action: "its own previous command",
+};
+
+/** Success at 40% with each input group blanked: the three seeds' mean
+ *  (bar) and each seed (tick), coloured by the reading rule frozen in
+ *  configs/rl/diagnostics_v1.yaml and applied in results/m13/results.json. */
+export function blanking(el, m13) {
+  return () => {
+    const b = m13.isaac?.blanking;
+    if (!b?.complete) {
+      const p = document.createElement("p");
+      p.className = "note";
+      p.textContent = "The blanking runs have not finished.";
+      return p;
+    }
+    const readings = b.reading.by_group;
+    const colourOf = (g) => !b.reading.attribution ? token("--muted")
+      : g === "none" ? token("--accent")
+        : { "carries the fault signal": token("--critical"), "needed to fly": token("--warning") }[readings[g]] ?? token("--muted");
+    const rows = Object.entries(b.groups).map(([g, cells]) => ({
+      g, label: INPUT_GROUPS[g] ?? g, v: cells["0.40"].success, healthy: cells["0.00"].success,
+      reading: g === "none" ? "the unblanked policy" : readings[g], seeds: Object.values(cells["0.40"].per_seed_success),
+    })).sort((a, c) => (a.g === "none" ? -1 : c.g === "none" ? 1 : a.v - c.v));
+    const base0 = b.groups.none["0.40"].success;
+    return Plot.plot({
+      ...base(el, { height: 34 * rows.length + 50, marginLeft: 200, marginRight: 16 }),
+      x: { domain: [0, Math.max(0.1, ...rows.flatMap((r) => r.seeds)) * 1.1], tickFormat: (d) => `${pct0(d)}%`,
+        label: "finished, rotor 40% weaker (Isaac) →", ticks: 5 },
+      y: { domain: rows.map((r) => r.label), label: null },
+      marks: [
+        Plot.gridX({ stroke: token("--grid"), strokeOpacity: 1 }),
+        Plot.barX(rows, { y: "label", x: "v", fill: (r) => colourOf(r.g), fillOpacity: 0.85, insetTop: 6, insetBottom: 6,
+          title: (r) => `${r.label}\nfinished at 40%: ${pct(r.v)} (three seeds' mean)\nhealthy flights finished: ${pct(r.healthy)}\nreading: ${r.reading}` }),
+        Plot.tickX(rows.flatMap((r) => r.seeds.map((v) => ({ label: r.label, v }))), { y: "label", x: "v", stroke: token("--ink"), strokeOpacity: 0.6 }),
+        Plot.ruleX([base0], { stroke: token("--accent"), strokeWidth: 1.5 }),
+        Plot.ruleX([base0 / 2], { stroke: token("--muted"), strokeDasharray: "4 3" }),
+      ],
+    });
   };
 }
 

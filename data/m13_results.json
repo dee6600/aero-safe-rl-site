@@ -1,0 +1,2394 @@
+{
+ "m13_version": "1",
+ "sources": {
+  "configs/rl/sweep_v1.yaml": "33775356b9f87267",
+  "configs/rl/generalization_v1.yaml": "36fdf4a9257dc651",
+  "configs/rl/diagnostics_v1.yaml": "e18fcb6cf15c61d5",
+  "configs/rl/observation_masks_v1.yaml": "9823df2d7b19c224"
+ },
+ "note": "Checks of the frozen M10 analysis, none pre-registered; the verdicts of record stay results/m10/results.json's.",
+ "flights": {
+  "m10": {
+   "planned": 4230,
+   "analysed": 4082
+  },
+  "fixed_setting": {
+   "planned": 408,
+   "analysed": 397
+  },
+  "m11": {
+   "planned": 4416,
+   "analysed": 4275
+  },
+  "evaluation_total": {
+   "planned": 9054,
+   "analysed": 8754
+  }
+ },
+ "multiplicity": {
+  "rule": "Bonferroni: each family at 0.05 overall, so each comparison at 1 - 0.05/k; the same bootstrap draws as the 95% intervals",
+  "main": {
+   "k": 10,
+   "level": 0.995,
+   "comparisons": [
+    {
+     "id": 1,
+     "a": "c4",
+     "b": "c3",
+     "outcome": "mission_success",
+     "severities": [
+      0.2,
+      0.3,
+      0.35
+     ],
+     "difference": 0.6844839840207828,
+     "lo": 0.5659140259294659,
+     "hi": 0.7832512315270936,
+     "holds": true
+    },
+    {
+     "id": 2,
+     "a": "c4",
+     "b": "c2",
+     "outcome": "mission_success",
+     "severities": [
+      0.2,
+      0.3,
+      0.35
+     ],
+     "difference": -0.01982511684004218,
+     "lo": -0.0994271068897935,
+     "hi": 0.02020202020202022,
+     "holds": false
+    },
+    {
+     "id": 3,
+     "a": "c4",
+     "b": "c2",
+     "outcome": "crash",
+     "severities": [
+      0.4,
+      0.45,
+      0.5
+     ],
+     "difference": -0.06996496629528726,
+     "lo": -0.2029935353539548,
+     "hi": 0.05388254041427657,
+     "holds": false
+    },
+    {
+     "id": 4,
+     "a": "c4",
+     "b": "c3",
+     "outcome": "crash",
+     "severities": [
+      0.4,
+      0.45,
+      0.5
+     ],
+     "difference": -0.017475396188267434,
+     "lo": -0.15390437312312316,
+     "hi": 0.1102732505091728,
+     "holds": false
+    },
+    {
+     "id": 5,
+     "a": "c4",
+     "b": "c2",
+     "outcome": "mission_success",
+     "severities": [
+      0.4
+     ],
+     "difference": 0.19515002970885323,
+     "lo": 0.009209744503862152,
+     "hi": 0.5208333333333334,
+     "holds": true
+    },
+    {
+     "id": 6,
+     "a": "c4",
+     "b": "c3",
+     "outcome": "mission_success",
+     "severities": [
+      0.4
+     ],
+     "difference": 0.20525103980986334,
+     "lo": 0.020202020202020204,
+     "hi": 0.5,
+     "holds": true
+    },
+    {
+     "id": 7,
+     "a": "c5",
+     "b": "c4",
+     "outcome": "crash",
+     "severities": [
+      0.4,
+      0.45,
+      0.5
+     ],
+     "difference": -0.011513157894736947,
+     "lo": -0.169030820269527,
+     "hi": 0.14377644697035544,
+     "holds": false
+    },
+    {
+     "id": 8,
+     "a": "c4",
+     "b": "c6",
+     "outcome": "crash",
+     "severities": [
+      0.4,
+      0.45,
+      0.5
+     ],
+     "difference": 0.01005138028808883,
+     "lo": -0.13668906320779137,
+     "hi": 0.15719136251860566,
+     "holds": false
+    },
+    {
+     "id": 9,
+     "a": "c5",
+     "b": "c4",
+     "outcome": "mission_success",
+     "severities": [
+      0.4
+     ],
+     "difference": 0.008448455139631605,
+     "lo": -0.36679371843434344,
+     "hi": 0.36423202614379113,
+     "holds": false
+    },
+    {
+     "id": 10,
+     "a": "c4",
+     "b": "c6",
+     "outcome": "mission_success",
+     "severities": [
+      0.4
+     ],
+     "difference": -0.023302881758764105,
+     "lo": -0.33155228758169925,
+     "hi": 0.3400765931372555,
+     "holds": false
+    }
+   ],
+   "changes": {
+    "flipped": [],
+    "max_shift_points": 0.0
+   }
+  },
+  "fixed_setting": {
+   "k": 6,
+   "level": 0.9916666666666667,
+   "comparisons": [
+    {
+     "a": "c4",
+     "b": "fixed",
+     "outcome": "mission_success",
+     "severities": [
+      0.35
+     ],
+     "difference": -0.030404040404040322,
+     "lo": -0.15499116161616314,
+     "hi": 0.040000000000000036,
+     "holds": false
+    },
+    {
+     "a": "c4",
+     "b": "fixed",
+     "outcome": "mission_success",
+     "severities": [
+      0.4
+     ],
+     "difference": 0.19525103980986333,
+     "lo": 0.01026893939393938,
+     "hi": 0.5,
+     "holds": true
+    },
+    {
+     "a": "c4",
+     "b": "fixed",
+     "outcome": "crash",
+     "severities": [
+      0.4,
+      0.45,
+      0.5
+     ],
+     "difference": -0.03202403573690693,
+     "lo": -0.16040055828499514,
+     "hi": 0.09091320590392357,
+     "holds": false
+    },
+    {
+     "a": "fixed",
+     "b": "c2",
+     "outcome": "mission_success",
+     "severities": [
+      0.35
+     ],
+     "difference": 0.000526315789473708,
+     "lo": -0.040000000000000036,
+     "hi": 0.04210526315789476,
+     "holds": false
+    },
+    {
+     "a": "fixed",
+     "b": "c2",
+     "outcome": "mission_success",
+     "severities": [
+      0.4
+     ],
+     "difference": -0.00010101010101010166,
+     "lo": -0.04040404040404041,
+     "hi": 0.04,
+     "holds": false
+    },
+    {
+     "a": "fixed",
+     "b": "c2",
+     "outcome": "crash",
+     "severities": [
+      0.4,
+      0.45,
+      0.5
+     ],
+     "difference": -0.037940930558380326,
+     "lo": -0.13542217476781238,
+     "hi": 0.059480148238537534,
+     "holds": false
+    }
+   ]
+  }
+ },
+ "crash_speed": {
+  "1.5": {
+   "comparisons": [
+    {
+     "id": 1,
+     "a": "c4",
+     "b": "c3",
+     "outcome": "mission_success",
+     "severities": [
+      0.2,
+      0.3,
+      0.35
+     ],
+     "difference": 0.6844839840207828,
+     "lo": 0.6051760899933829,
+     "hi": 0.7583768350366394,
+     "holds": true
+    },
+    {
+     "id": 2,
+     "a": "c4",
+     "b": "c2",
+     "outcome": "mission_success",
+     "severities": [
+      0.2,
+      0.3,
+      0.35
+     ],
+     "difference": -0.01982511684004218,
+     "lo": -0.07455148499924613,
+     "hi": 0.015151515151515138,
+     "holds": false
+    },
+    {
+     "id": 3,
+     "a": "c4",
+     "b": "c2",
+     "outcome": "crash",
+     "severities": [
+      0.4,
+      0.45,
+      0.5
+     ],
+     "difference": -0.08809532379412444,
+     "lo": -0.15361670395227445,
+     "hi": -0.023782524540205782,
+     "holds": true
+    },
+    {
+     "id": 4,
+     "a": "c4",
+     "b": "c3",
+     "outcome": "crash",
+     "severities": [
+      0.4,
+      0.45,
+      0.5
+     ],
+     "difference": 0.04806012695864181,
+     "lo": -0.023951550560461474,
+     "hi": 0.1193984748981655,
+     "holds": false
+    },
+    {
+     "id": 5,
+     "a": "c4",
+     "b": "c2",
+     "outcome": "mission_success",
+     "severities": [
+      0.4
+     ],
+     "difference": 0.19515002970885323,
+     "lo": 0.030303030303030304,
+     "hi": 0.4169823232323232,
+     "holds": true
+    },
+    {
+     "id": 6,
+     "a": "c4",
+     "b": "c3",
+     "outcome": "mission_success",
+     "severities": [
+      0.4
+     ],
+     "difference": 0.20525103980986334,
+     "lo": 0.04040404040404041,
+     "hi": 0.4270833333333333,
+     "holds": true
+    },
+    {
+     "id": 7,
+     "a": "c5",
+     "b": "c4",
+     "outcome": "crash",
+     "severities": [
+      0.4,
+      0.45,
+      0.5
+     ],
+     "difference": 0.016494774477447738,
+     "lo": -0.05716393267616218,
+     "hi": 0.08891302617103793,
+     "holds": false
+    },
+    {
+     "id": 8,
+     "a": "c4",
+     "b": "c6",
+     "outcome": "crash",
+     "severities": [
+      0.4,
+      0.45,
+      0.5
+     ],
+     "difference": -0.024149387477763407,
+     "lo": -0.0938443147473511,
+     "hi": 0.04652860731751449,
+     "holds": false
+    },
+    {
+     "id": 9,
+     "a": "c5",
+     "b": "c4",
+     "outcome": "mission_success",
+     "severities": [
+      0.4
+     ],
+     "difference": 0.008448455139631605,
+     "lo": -0.2580097853535353,
+     "hi": 0.26322786690433736,
+     "holds": false
+    },
+    {
+     "id": 10,
+     "a": "c4",
+     "b": "c6",
+     "outcome": "mission_success",
+     "severities": [
+      0.4
+     ],
+     "difference": -0.023302881758764105,
+     "lo": -0.2589321524064168,
+     "hi": 0.2349598930481283,
+     "holds": false
+    }
+   ],
+   "crash_rate_040_050": {
+    "c2": {
+     "rate": 0.8489932885906041,
+     "lo": 0.8039141164943951,
+     "hi": 0.8851890422484688,
+     "n": 298
+    },
+    "c3": {
+     "rate": 0.7128378378378378,
+     "lo": 0.6588266996040402,
+     "hi": 0.7613951775470957,
+     "n": 296
+    },
+    "c4": {
+     "rate": 0.7608979647964796,
+     "lo": 0.7090870945287638,
+     "hi": 0.8086530528052805,
+     "n": 293
+    }
+   },
+   "changes": {
+    "flipped": [
+     3
+    ],
+    "max_shift_points": 6.553552314690925
+   }
+  },
+  "2.5": {
+   "comparisons": [
+    {
+     "id": 1,
+     "a": "c4",
+     "b": "c3",
+     "outcome": "mission_success",
+     "severities": [
+      0.2,
+      0.3,
+      0.35
+     ],
+     "difference": 0.6844839840207828,
+     "lo": 0.6051760899933829,
+     "hi": 0.7583768350366394,
+     "holds": true
+    },
+    {
+     "id": 2,
+     "a": "c4",
+     "b": "c2",
+     "outcome": "mission_success",
+     "severities": [
+      0.2,
+      0.3,
+      0.35
+     ],
+     "difference": -0.01982511684004218,
+     "lo": -0.07455148499924613,
+     "hi": 0.015151515151515138,
+     "holds": false
+    },
+    {
+     "id": 3,
+     "a": "c4",
+     "b": "c2",
+     "outcome": "crash",
+     "severities": [
+      0.4,
+      0.45,
+      0.5
+     ],
+     "difference": -0.07155237335814113,
+     "lo": -0.20593873670085122,
+     "hi": 0.04727427440730637,
+     "holds": false
+    },
+    {
+     "id": 4,
+     "a": "c4",
+     "b": "c3",
+     "outcome": "crash",
+     "severities": [
+      0.4,
+      0.45,
+      0.5
+     ],
+     "difference": -0.05237043974667732,
+     "lo": -0.19037073893200118,
+     "hi": 0.07023143192697656,
+     "holds": false
+    },
+    {
+     "id": 5,
+     "a": "c4",
+     "b": "c2",
+     "outcome": "mission_success",
+     "severities": [
+      0.4
+     ],
+     "difference": 0.19515002970885323,
+     "lo": 0.030303030303030304,
+     "hi": 0.4169823232323232,
+     "holds": true
+    },
+    {
+     "id": 6,
+     "a": "c4",
+     "b": "c3",
+     "outcome": "mission_success",
+     "severities": [
+      0.4
+     ],
+     "difference": 0.20525103980986334,
+     "lo": 0.04040404040404041,
+     "hi": 0.4270833333333333,
+     "holds": true
+    },
+    {
+     "id": 7,
+     "a": "c5",
+     "b": "c4",
+     "outcome": "crash",
+     "severities": [
+      0.4,
+      0.45,
+      0.5
+     ],
+     "difference": 0.012167071970354937,
+     "lo": -0.1493055555555554,
+     "hi": 0.1729239947021017,
+     "holds": false
+    },
+    {
+     "id": 8,
+     "a": "c4",
+     "b": "c6",
+     "outcome": "crash",
+     "severities": [
+      0.4,
+      0.45,
+      0.5
+     ],
+     "difference": -0.021989819029922142,
+     "lo": -0.16841349576134082,
+     "hi": 0.11823655101479517,
+     "holds": false
+    },
+    {
+     "id": 9,
+     "a": "c5",
+     "b": "c4",
+     "outcome": "mission_success",
+     "severities": [
+      0.4
+     ],
+     "difference": 0.008448455139631605,
+     "lo": -0.2580097853535353,
+     "hi": 0.26322786690433736,
+     "holds": false
+    },
+    {
+     "id": 10,
+     "a": "c4",
+     "b": "c6",
+     "outcome": "mission_success",
+     "severities": [
+      0.4
+     ],
+     "difference": -0.023302881758764105,
+     "lo": -0.2589321524064168,
+     "hi": 0.2349598930481283,
+     "holds": false
+    }
+   ],
+   "crash_rate_040_050": {
+    "c2": {
+     "rate": 0.6610738255033557,
+     "lo": 0.6055841259388963,
+     "hi": 0.7124634857885792,
+     "n": 298
+    },
+    "c3": {
+     "rate": 0.6418918918918919,
+     "lo": 0.5857749767405153,
+     "hi": 0.6943729413602419,
+     "n": 296
+    },
+    "c4": {
+     "rate": 0.5895214521452146,
+     "lo": 0.4618055555555556,
+     "hi": 0.6919021589658966,
+     "n": 293
+    }
+   },
+   "changes": {
+    "flipped": [],
+    "max_shift_points": 3.489504355840989
+   }
+  }
+ },
+ "fault_never_began": {
+  "flights": [
+   "m10_c2_nominal 0/ep_0152",
+   "m10_c2_nominal 1/ep_0288",
+   "m10_c4_v3_seed_3 1/ep_0000",
+   "m10_c4_v3_seed_1 1/ep_0100"
+  ],
+  "comparisons": [
+   {
+    "id": 1,
+    "a": "c4",
+    "b": "c3",
+    "outcome": "mission_success",
+    "severities": [
+     0.2,
+     0.3,
+     0.35
+    ],
+    "difference": 0.6844839840207828,
+    "lo": 0.6051760899933829,
+    "hi": 0.7583768350366394,
+    "holds": true
+   },
+   {
+    "id": 2,
+    "a": "c4",
+    "b": "c2",
+    "outcome": "mission_success",
+    "severities": [
+     0.2,
+     0.3,
+     0.35
+    ],
+    "difference": -0.01977358107422078,
+    "lo": -0.07449994923342473,
+    "hi": 0.015306122448979553,
+    "holds": false
+   },
+   {
+    "id": 3,
+    "a": "c4",
+    "b": "c2",
+    "outcome": "crash",
+    "severities": [
+     0.4,
+     0.45,
+     0.5
+    ],
+    "difference": -0.06543280255259731,
+    "lo": -0.16078838076319107,
+    "hi": 0.02322407037595318,
+    "holds": false
+   },
+   {
+    "id": 4,
+    "a": "c4",
+    "b": "c3",
+    "outcome": "crash",
+    "severities": [
+     0.4,
+     0.45,
+     0.5
+    ],
+    "difference": -0.01294323244557749,
+    "lo": -0.10634512802275964,
+    "hi": 0.07733050011971321,
+    "holds": false
+   },
+   {
+    "id": 5,
+    "a": "c4",
+    "b": "c2",
+    "outcome": "mission_success",
+    "severities": [
+     0.4
+    ],
+    "difference": 0.18910164261207904,
+    "lo": 0.030303030303030304,
+    "hi": 0.3965461062235256,
+    "holds": true
+   },
+   {
+    "id": 6,
+    "a": "c4",
+    "b": "c3",
+    "outcome": "mission_success",
+    "severities": [
+     0.4
+    ],
+    "difference": 0.19920265271308915,
+    "lo": 0.04040404040404041,
+    "hi": 0.40860215053763443,
+    "holds": true
+   },
+   {
+    "id": 7,
+    "a": "c5",
+    "b": "c4",
+    "outcome": "crash",
+    "severities": [
+     0.4,
+     0.45,
+     0.5
+    ],
+    "difference": -0.01604532163742689,
+    "lo": -0.12706447947426322,
+    "hi": 0.0967170401250651,
+    "holds": false
+   },
+   {
+    "id": 8,
+    "a": "c4",
+    "b": "c6",
+    "outcome": "crash",
+    "severities": [
+     0.4,
+     0.45,
+     0.5
+    ],
+    "difference": 0.014583544030778772,
+    "lo": -0.09036607990425632,
+    "hi": 0.11904025810428395,
+    "holds": false
+   },
+   {
+    "id": 9,
+    "a": "c5",
+    "b": "c4",
+    "outcome": "mission_success",
+    "severities": [
+     0.4
+    ],
+    "difference": 0.014496842236405794,
+    "lo": -0.24962426686217012,
+    "hi": 0.2637865850152378,
+    "holds": false
+   },
+   {
+    "id": 10,
+    "a": "c4",
+    "b": "c6",
+    "outcome": "mission_success",
+    "severities": [
+     0.4
+    ],
+    "difference": -0.029351268855538293,
+    "lo": -0.25926730540701093,
+    "hi": 0.22391206299235233,
+    "holds": false
+   }
+  ],
+  "c4_success_050": {
+   "rate": 0.0,
+   "lo": 0.0,
+   "hi": 0.03966750261173514,
+   "n": 93
+  },
+  "changes": {
+   "flipped": [],
+   "max_shift_points": 0.6048387096774188
+  }
+ },
+ "resets": {
+  "split": {
+   "c2": {
+    "none": 29,
+    "hard": 558
+   },
+   "c3": {
+    "none": 22,
+    "hard": 568
+   },
+   "c4": {
+    "none": 30,
+    "hard": 558
+   },
+   "c4_600": {
+    "none": 28,
+    "hard": 762
+   },
+   "c5": {
+    "none": 32,
+    "hard": 500
+   },
+   "c5_delay1s": {
+    "none": 11,
+    "hard": 188
+   },
+   "c5_delay2s": {
+    "none": 14,
+    "hard": 181
+   },
+   "c6": {
+    "none": 20,
+    "hard": 581
+   }
+  },
+  "soft_share": 0.0,
+  "comparisons_without_soft": [
+   {
+    "id": 1,
+    "a": "c4",
+    "b": "c3",
+    "outcome": "mission_success",
+    "severities": [
+     0.2,
+     0.3,
+     0.35
+    ],
+    "difference": 0.6844839840207828,
+    "lo": 0.6051760899933829,
+    "hi": 0.7583768350366394,
+    "holds": true
+   },
+   {
+    "id": 2,
+    "a": "c4",
+    "b": "c2",
+    "outcome": "mission_success",
+    "severities": [
+     0.2,
+     0.3,
+     0.35
+    ],
+    "difference": -0.01982511684004218,
+    "lo": -0.07455148499924613,
+    "hi": 0.015151515151515138,
+    "holds": false
+   },
+   {
+    "id": 3,
+    "a": "c4",
+    "b": "c2",
+    "outcome": "crash",
+    "severities": [
+     0.4,
+     0.45,
+     0.5
+    ],
+    "difference": -0.06996496629528726,
+    "lo": -0.1635964299030574,
+    "hi": 0.017638728533088135,
+    "holds": false
+   },
+   {
+    "id": 4,
+    "a": "c4",
+    "b": "c3",
+    "outcome": "crash",
+    "severities": [
+     0.4,
+     0.45,
+     0.5
+    ],
+    "difference": -0.017475396188267434,
+    "lo": -0.11374159586566762,
+    "hi": 0.07347972972972971,
+    "holds": false
+   },
+   {
+    "id": 5,
+    "a": "c4",
+    "b": "c2",
+    "outcome": "mission_success",
+    "severities": [
+     0.4
+    ],
+    "difference": 0.19515002970885323,
+    "lo": 0.030303030303030304,
+    "hi": 0.4169823232323232,
+    "holds": true
+   },
+   {
+    "id": 6,
+    "a": "c4",
+    "b": "c3",
+    "outcome": "mission_success",
+    "severities": [
+     0.4
+    ],
+    "difference": 0.20525103980986334,
+    "lo": 0.04040404040404041,
+    "hi": 0.4270833333333333,
+    "holds": true
+   },
+   {
+    "id": 7,
+    "a": "c5",
+    "b": "c4",
+    "outcome": "crash",
+    "severities": [
+     0.4,
+     0.45,
+     0.5
+    ],
+    "difference": -0.011513157894736947,
+    "lo": -0.12410071434775063,
+    "hi": 0.10031853432053715,
+    "holds": false
+   },
+   {
+    "id": 8,
+    "a": "c4",
+    "b": "c6",
+    "outcome": "crash",
+    "severities": [
+     0.4,
+     0.45,
+     0.5
+    ],
+    "difference": 0.01005138028808883,
+    "lo": -0.09261397422005116,
+    "hi": 0.11438102262357078,
+    "holds": false
+   },
+   {
+    "id": 9,
+    "a": "c5",
+    "b": "c4",
+    "outcome": "mission_success",
+    "severities": [
+     0.4
+    ],
+    "difference": 0.008448455139631605,
+    "lo": -0.2580097853535353,
+    "hi": 0.26322786690433736,
+    "holds": false
+   },
+   {
+    "id": 10,
+    "a": "c4",
+    "b": "c6",
+    "outcome": "mission_success",
+    "severities": [
+     0.4
+    ],
+    "difference": -0.023302881758764105,
+    "lo": -0.2589321524064168,
+    "hi": 0.2349598930481283,
+    "holds": false
+   }
+  ],
+  "changes": {
+   "flipped": [],
+   "max_shift_points": 0.0
+  }
+ },
+ "control_rate": {
+  "c2": {
+   "flights": 587,
+   "rows_per_s": 8.561643835616438,
+   "command_changes_per_s": 0.0
+  },
+  "c3": {
+   "flights": 590,
+   "rows_per_s": 8.520065487055719,
+   "command_changes_per_s": 0.13722524487213703
+  },
+  "c4": {
+   "flights": 588,
+   "rows_per_s": 8.630121601108915,
+   "command_changes_per_s": 3.4666161604083574
+  },
+  "c6": {
+   "flights": 601,
+   "rows_per_s": 8.57881955442931,
+   "command_changes_per_s": 3.648552444233507
+  },
+  "c5": {
+   "flights": 532,
+   "rows_per_s": 8.529635442306727,
+   "command_changes_per_s": 3.298153290275713
+  },
+  "c5_delay1s": {
+   "flights": 199,
+   "rows_per_s": 8.550280755487494,
+   "command_changes_per_s": 3.1616142830574665
+  },
+  "c5_delay2s": {
+   "flights": 195,
+   "rows_per_s": 8.488964346349748,
+   "command_changes_per_s": 3.1746031746031753
+  },
+  "c4_600": {
+   "flights": 790,
+   "rows_per_s": 8.503242461142388,
+   "command_changes_per_s": 2.4405708692630914
+  }
+ },
+ "px4_detector": {
+  "episodes": 750,
+  "all_requested": [
+   {
+    "lo": 0.2,
+    "hi": 0.4,
+    "n": 178,
+    "confirmed": 126,
+    "silent": 178
+   },
+   {
+    "lo": 0.4,
+    "hi": 0.6,
+    "n": 169,
+    "confirmed": 132,
+    "silent": 150
+   },
+   {
+    "lo": 0.6,
+    "hi": 0.8,
+    "n": 152,
+    "confirmed": 126,
+    "silent": 112
+   },
+   {
+    "lo": 0.8,
+    "hi": 1.0,
+    "n": 98,
+    "confirmed": 81,
+    "silent": 62
+   }
+  ],
+  "confirmed_only": [
+   {
+    "lo": 0.2,
+    "hi": 0.4,
+    "n": 126,
+    "confirmed": 126,
+    "silent": 126
+   },
+   {
+    "lo": 0.4,
+    "hi": 0.6,
+    "n": 132,
+    "confirmed": 132,
+    "silent": 113
+   },
+   {
+    "lo": 0.6,
+    "hi": 0.8,
+    "n": 126,
+    "confirmed": 126,
+    "silent": 86
+   },
+   {
+    "lo": 0.8,
+    "hi": 1.0,
+    "n": 81,
+    "confirmed": 81,
+    "silent": 45
+   }
+  ]
+ },
+ "physics": {
+  "mass_kg": 2.0643076923076915,
+  "rotor_max_thrust_n": 8.54858,
+  "hover_thrust_fraction": 0.592026483660714,
+  "hover_limit_severity": 0.407973516339286
+ },
+ "m11_transfer": {
+  "mission_success": {
+   "inside": 21,
+   "cells": 22
+  },
+  "crash": {
+   "inside": 22,
+   "cells": 22
+  }
+ },
+ "transfer_misses": {
+  "m10": {
+   "mission_success": {
+    "px4_higher": [
+     "c4 v3_seed_1 at 0.40",
+     "c4 v3_seed_3 at 0.40",
+     "c4_600 v4_seed_1 at 0.40",
+     "c4_600 v4_seed_3 at 0.40",
+     "c4 v3_seed_1 at 0.50"
+    ],
+    "px4_lower": [
+     "c4 v3_seed_1 at 0.30",
+     "c4 v3_seed_1 at 0.35"
+    ]
+   },
+   "crash": {
+    "px4_higher": [
+     "c4 v3_seed_1 at 0.40"
+    ],
+    "px4_lower": [
+     "c4 v3_seed_1 at 0.70"
+    ]
+   }
+  },
+  "m11": {
+   "mission_success": {
+    "px4_higher": [],
+    "px4_lower": [
+     "onset 1-3 s, before takeoff at 0.35"
+    ]
+   },
+   "crash": {
+    "px4_higher": [],
+    "px4_lower": []
+   }
+  }
+ },
+ "training": {
+  "num_envs": 16384,
+  "updates": 300,
+  "decisions_per_update": 24,
+  "decisions_per_seed": 117964800,
+  "hidden": [
+   128,
+   128
+  ],
+  "seeds": {
+   "1": {
+    "hours": 2.0774297975000002
+   },
+   "10": {
+    "hours": 2.196085960277778
+   },
+   "2": {
+    "hours": 2.140124132222222
+   },
+   "3": {
+    "hours": 2.219555648888889
+   },
+   "4": {
+    "hours": 2.148060781388889
+   },
+   "5": {
+    "hours": 2.129725503611111
+   },
+   "6": {
+    "hours": 2.040411801111111
+   },
+   "7": {
+    "hours": 2.0469609163888887
+   },
+   "8": {
+    "hours": 2.1217805944444446
+   },
+   "9": {
+    "hours": 2.1367878844444443
+   }
+  },
+  "median_hours": 2.1332566940277777
+ },
+ "example": {
+  "rule": "Rotor weakened by 40%. Every condition flew the fault, every learned-policy flight finished the mission, and neither no recovery nor the rule-based controller did. Every flight shown had its fault confirmed as applied by the rotor-fault plugin.",
+  "considered": 102,
+  "qualified": 4,
+  "fault_id": "0.400/1/ramp/3.959/16.0356",
+  "flights": {
+   "c2": "m10_c2_nominal/1/ep_0126",
+   "c3": "m10_c3_rule_based/1/ep_0126",
+   "c4": "m10_c4_v3_seed_2/1/ep_0045"
+  }
+ },
+ "isaac": {
+  "label": "training-simulator diagnostics (configs/rl/diagnostics_v1.yaml); not results",
+  "seed_spread": {
+   "seeds": {
+    "1": {
+     "cells": {
+      "0.00": {
+       "success": 1.0,
+       "crash": 0.0,
+       "n": 256
+      },
+      "0.20": {
+       "success": 1.0,
+       "crash": 0.0,
+       "n": 256
+      },
+      "0.30": {
+       "success": 1.0,
+       "crash": 0.0,
+       "n": 256
+      },
+      "0.35": {
+       "success": 0.99609375,
+       "crash": 0.0,
+       "n": 256
+      },
+      "0.40": {
+       "success": 0.0078125,
+       "crash": 0.00390625,
+       "n": 256
+      },
+      "0.45": {
+       "success": 0.0,
+       "crash": 0.66796875,
+       "n": 256
+      },
+      "0.50": {
+       "success": 0.0,
+       "crash": 0.98828125,
+       "n": 256
+      },
+      "0.70": {
+       "success": 0.0,
+       "crash": 1.0,
+       "n": 256
+      }
+     },
+     "gate_passed": true,
+     "success_040": 0.0078125,
+     "crash_040_050": 0.5533854166666666
+    },
+    "2": {
+     "cells": {
+      "0.00": {
+       "success": 1.0,
+       "crash": 0.0,
+       "n": 256
+      },
+      "0.20": {
+       "success": 1.0,
+       "crash": 0.0,
+       "n": 256
+      },
+      "0.30": {
+       "success": 1.0,
+       "crash": 0.0,
+       "n": 256
+      },
+      "0.35": {
+       "success": 1.0,
+       "crash": 0.0,
+       "n": 256
+      },
+      "0.40": {
+       "success": 0.125,
+       "crash": 0.15234375,
+       "n": 256
+      },
+      "0.45": {
+       "success": 0.0,
+       "crash": 0.921875,
+       "n": 256
+      },
+      "0.50": {
+       "success": 0.0,
+       "crash": 1.0,
+       "n": 256
+      },
+      "0.70": {
+       "success": 0.0,
+       "crash": 0.9921875,
+       "n": 256
+      }
+     },
+     "gate_passed": true,
+     "success_040": 0.125,
+     "crash_040_050": 0.69140625
+    },
+    "3": {
+     "cells": {
+      "0.00": {
+       "success": 1.0,
+       "crash": 0.0,
+       "n": 256
+      },
+      "0.20": {
+       "success": 1.0,
+       "crash": 0.0,
+       "n": 256
+      },
+      "0.30": {
+       "success": 1.0,
+       "crash": 0.0,
+       "n": 256
+      },
+      "0.35": {
+       "success": 1.0,
+       "crash": 0.0,
+       "n": 256
+      },
+      "0.40": {
+       "success": 0.2109375,
+       "crash": 0.125,
+       "n": 256
+      },
+      "0.45": {
+       "success": 0.0,
+       "crash": 1.0,
+       "n": 256
+      },
+      "0.50": {
+       "success": 0.0,
+       "crash": 1.0,
+       "n": 256
+      },
+      "0.70": {
+       "success": 0.0,
+       "crash": 1.0,
+       "n": 256
+      }
+     },
+     "gate_passed": true,
+     "success_040": 0.2109375,
+     "crash_040_050": 0.7083333333333334
+    },
+    "4": {
+     "cells": {
+      "0.00": {
+       "success": 1.0,
+       "crash": 0.0,
+       "n": 256
+      },
+      "0.20": {
+       "success": 1.0,
+       "crash": 0.0,
+       "n": 256
+      },
+      "0.30": {
+       "success": 1.0,
+       "crash": 0.0,
+       "n": 256
+      },
+      "0.35": {
+       "success": 1.0,
+       "crash": 0.0,
+       "n": 256
+      },
+      "0.40": {
+       "success": 0.3828125,
+       "crash": 0.1171875,
+       "n": 256
+      },
+      "0.45": {
+       "success": 0.0,
+       "crash": 1.0,
+       "n": 256
+      },
+      "0.50": {
+       "success": 0.0,
+       "crash": 1.0,
+       "n": 256
+      },
+      "0.70": {
+       "success": 0.0,
+       "crash": 1.0,
+       "n": 256
+      }
+     },
+     "gate_passed": true,
+     "success_040": 0.3828125,
+     "crash_040_050": 0.7057291666666666
+    },
+    "5": {
+     "cells": {
+      "0.00": {
+       "success": 0.0,
+       "crash": 0.0,
+       "n": 256
+      },
+      "0.20": {
+       "success": 0.0,
+       "crash": 0.0,
+       "n": 256
+      },
+      "0.30": {
+       "success": 0.0,
+       "crash": 0.0,
+       "n": 256
+      },
+      "0.35": {
+       "success": 0.0,
+       "crash": 0.0,
+       "n": 256
+      },
+      "0.40": {
+       "success": 0.0,
+       "crash": 0.05859375,
+       "n": 256
+      },
+      "0.45": {
+       "success": 0.0,
+       "crash": 0.9921875,
+       "n": 256
+      },
+      "0.50": {
+       "success": 0.0,
+       "crash": 1.0,
+       "n": 256
+      },
+      "0.70": {
+       "success": 0.0,
+       "crash": 1.0,
+       "n": 256
+      }
+     },
+     "gate_passed": false,
+     "success_040": 0.0,
+     "crash_040_050": 0.68359375
+    },
+    "6": {
+     "cells": {
+      "0.00": {
+       "success": 1.0,
+       "crash": 0.0,
+       "n": 256
+      },
+      "0.20": {
+       "success": 1.0,
+       "crash": 0.0,
+       "n": 256
+      },
+      "0.30": {
+       "success": 1.0,
+       "crash": 0.0,
+       "n": 256
+      },
+      "0.35": {
+       "success": 1.0,
+       "crash": 0.0,
+       "n": 256
+      },
+      "0.40": {
+       "success": 0.23046875,
+       "crash": 0.0546875,
+       "n": 256
+      },
+      "0.45": {
+       "success": 0.0,
+       "crash": 1.0,
+       "n": 256
+      },
+      "0.50": {
+       "success": 0.0,
+       "crash": 1.0,
+       "n": 256
+      },
+      "0.70": {
+       "success": 0.0,
+       "crash": 1.0,
+       "n": 256
+      }
+     },
+     "gate_passed": true,
+     "success_040": 0.23046875,
+     "crash_040_050": 0.6848958333333334
+    },
+    "7": {
+     "cells": {
+      "0.00": {
+       "success": 1.0,
+       "crash": 0.0,
+       "n": 256
+      },
+      "0.20": {
+       "success": 1.0,
+       "crash": 0.0,
+       "n": 256
+      },
+      "0.30": {
+       "success": 1.0,
+       "crash": 0.0,
+       "n": 256
+      },
+      "0.35": {
+       "success": 1.0,
+       "crash": 0.0,
+       "n": 256
+      },
+      "0.40": {
+       "success": 0.36328125,
+       "crash": 0.0625,
+       "n": 256
+      },
+      "0.45": {
+       "success": 0.0,
+       "crash": 0.9140625,
+       "n": 256
+      },
+      "0.50": {
+       "success": 0.0,
+       "crash": 1.0,
+       "n": 256
+      },
+      "0.70": {
+       "success": 0.0,
+       "crash": 1.0,
+       "n": 256
+      }
+     },
+     "gate_passed": true,
+     "success_040": 0.36328125,
+     "crash_040_050": 0.6588541666666666
+    },
+    "8": {
+     "cells": {
+      "0.00": {
+       "success": 1.0,
+       "crash": 0.0,
+       "n": 256
+      },
+      "0.20": {
+       "success": 1.0,
+       "crash": 0.0,
+       "n": 256
+      },
+      "0.30": {
+       "success": 1.0,
+       "crash": 0.0,
+       "n": 256
+      },
+      "0.35": {
+       "success": 1.0,
+       "crash": 0.0,
+       "n": 256
+      },
+      "0.40": {
+       "success": 0.140625,
+       "crash": 0.015625,
+       "n": 256
+      },
+      "0.45": {
+       "success": 0.0,
+       "crash": 0.9375,
+       "n": 256
+      },
+      "0.50": {
+       "success": 0.0,
+       "crash": 1.0,
+       "n": 256
+      },
+      "0.70": {
+       "success": 0.0,
+       "crash": 1.0,
+       "n": 256
+      }
+     },
+     "gate_passed": true,
+     "success_040": 0.140625,
+     "crash_040_050": 0.6510416666666666
+    },
+    "9": {
+     "cells": {
+      "0.00": {
+       "success": 1.0,
+       "crash": 0.0,
+       "n": 256
+      },
+      "0.20": {
+       "success": 1.0,
+       "crash": 0.0,
+       "n": 256
+      },
+      "0.30": {
+       "success": 1.0,
+       "crash": 0.0,
+       "n": 256
+      },
+      "0.35": {
+       "success": 1.0,
+       "crash": 0.0,
+       "n": 256
+      },
+      "0.40": {
+       "success": 0.00390625,
+       "crash": 0.1484375,
+       "n": 256
+      },
+      "0.45": {
+       "success": 0.0,
+       "crash": 0.87890625,
+       "n": 256
+      },
+      "0.50": {
+       "success": 0.0,
+       "crash": 1.0,
+       "n": 256
+      },
+      "0.70": {
+       "success": 0.0,
+       "crash": 1.0,
+       "n": 256
+      }
+     },
+     "gate_passed": true,
+     "success_040": 0.00390625,
+     "crash_040_050": 0.67578125
+    },
+    "10": {
+     "cells": {
+      "0.00": {
+       "success": 1.0,
+       "crash": 0.0,
+       "n": 256
+      },
+      "0.20": {
+       "success": 1.0,
+       "crash": 0.0,
+       "n": 256
+      },
+      "0.30": {
+       "success": 1.0,
+       "crash": 0.0,
+       "n": 256
+      },
+      "0.35": {
+       "success": 1.0,
+       "crash": 0.0,
+       "n": 256
+      },
+      "0.40": {
+       "success": 0.01171875,
+       "crash": 0.15625,
+       "n": 256
+      },
+      "0.45": {
+       "success": 0.0,
+       "crash": 1.0,
+       "n": 256
+      },
+      "0.50": {
+       "success": 0.0,
+       "crash": 1.0,
+       "n": 256
+      },
+      "0.70": {
+       "success": 0.0,
+       "crash": 1.0,
+       "n": 256
+      }
+     },
+     "gate_passed": true,
+     "success_040": 0.01171875,
+     "crash_040_050": 0.71875
+    }
+   },
+   "complete": true,
+   "expected": 10,
+   "all": {
+    "n_seeds": 10,
+    "by_severity": {
+     "0.00": {
+      "success": {
+       "mean": 0.9,
+       "min": 0.0,
+       "max": 1.0
+      },
+      "crash": {
+       "mean": 0.0,
+       "min": 0.0,
+       "max": 0.0
+      }
+     },
+     "0.20": {
+      "success": {
+       "mean": 0.9,
+       "min": 0.0,
+       "max": 1.0
+      },
+      "crash": {
+       "mean": 0.0,
+       "min": 0.0,
+       "max": 0.0
+      }
+     },
+     "0.30": {
+      "success": {
+       "mean": 0.9,
+       "min": 0.0,
+       "max": 1.0
+      },
+      "crash": {
+       "mean": 0.0,
+       "min": 0.0,
+       "max": 0.0
+      }
+     },
+     "0.35": {
+      "success": {
+       "mean": 0.899609375,
+       "min": 0.0,
+       "max": 1.0
+      },
+      "crash": {
+       "mean": 0.0,
+       "min": 0.0,
+       "max": 0.0
+      }
+     },
+     "0.40": {
+      "success": {
+       "mean": 0.14765625,
+       "min": 0.0,
+       "max": 0.3828125
+      },
+      "crash": {
+       "mean": 0.089453125,
+       "min": 0.00390625,
+       "max": 0.15625
+      }
+     },
+     "0.45": {
+      "success": {
+       "mean": 0.0,
+       "min": 0.0,
+       "max": 0.0
+      },
+      "crash": {
+       "mean": 0.93125,
+       "min": 0.66796875,
+       "max": 1.0
+      }
+     },
+     "0.50": {
+      "success": {
+       "mean": 0.0,
+       "min": 0.0,
+       "max": 0.0
+      },
+      "crash": {
+       "mean": 0.998828125,
+       "min": 0.98828125,
+       "max": 1.0
+      }
+     },
+     "0.70": {
+      "success": {
+       "mean": 0.0,
+       "min": 0.0,
+       "max": 0.0
+      },
+      "crash": {
+       "mean": 0.99921875,
+       "min": 0.9921875,
+       "max": 1.0
+      }
+     }
+    },
+    "success_040": 0.14765625,
+    "crash_040_050": 0.6731770833333334
+   },
+   "gate_passing": {
+    "n_seeds": 9,
+    "by_severity": {
+     "0.00": {
+      "success": {
+       "mean": 1.0,
+       "min": 1.0,
+       "max": 1.0
+      },
+      "crash": {
+       "mean": 0.0,
+       "min": 0.0,
+       "max": 0.0
+      }
+     },
+     "0.20": {
+      "success": {
+       "mean": 1.0,
+       "min": 1.0,
+       "max": 1.0
+      },
+      "crash": {
+       "mean": 0.0,
+       "min": 0.0,
+       "max": 0.0
+      }
+     },
+     "0.30": {
+      "success": {
+       "mean": 1.0,
+       "min": 1.0,
+       "max": 1.0
+      },
+      "crash": {
+       "mean": 0.0,
+       "min": 0.0,
+       "max": 0.0
+      }
+     },
+     "0.35": {
+      "success": {
+       "mean": 0.9995659722222222,
+       "min": 0.99609375,
+       "max": 1.0
+      },
+      "crash": {
+       "mean": 0.0,
+       "min": 0.0,
+       "max": 0.0
+      }
+     },
+     "0.40": {
+      "success": {
+       "mean": 0.1640625,
+       "min": 0.00390625,
+       "max": 0.3828125
+      },
+      "crash": {
+       "mean": 0.09288194444444445,
+       "min": 0.00390625,
+       "max": 0.15625
+      }
+     },
+     "0.45": {
+      "success": {
+       "mean": 0.0,
+       "min": 0.0,
+       "max": 0.0
+      },
+      "crash": {
+       "mean": 0.9244791666666666,
+       "min": 0.66796875,
+       "max": 1.0
+      }
+     },
+     "0.50": {
+      "success": {
+       "mean": 0.0,
+       "min": 0.0,
+       "max": 0.0
+      },
+      "crash": {
+       "mean": 0.9986979166666666,
+       "min": 0.98828125,
+       "max": 1.0
+      }
+     },
+     "0.70": {
+      "success": {
+       "mean": 0.0,
+       "min": 0.0,
+       "max": 0.0
+      },
+      "crash": {
+       "mean": 0.9991319444444444,
+       "min": 0.9921875,
+       "max": 1.0
+      }
+     }
+    },
+    "success_040": 0.1640625,
+    "crash_040_050": 0.6720196759259259
+   },
+   "flown": {
+    "n_seeds": 3,
+    "by_severity": {
+     "0.00": {
+      "success": {
+       "mean": 1.0,
+       "min": 1.0,
+       "max": 1.0
+      },
+      "crash": {
+       "mean": 0.0,
+       "min": 0.0,
+       "max": 0.0
+      }
+     },
+     "0.20": {
+      "success": {
+       "mean": 1.0,
+       "min": 1.0,
+       "max": 1.0
+      },
+      "crash": {
+       "mean": 0.0,
+       "min": 0.0,
+       "max": 0.0
+      }
+     },
+     "0.30": {
+      "success": {
+       "mean": 1.0,
+       "min": 1.0,
+       "max": 1.0
+      },
+      "crash": {
+       "mean": 0.0,
+       "min": 0.0,
+       "max": 0.0
+      }
+     },
+     "0.35": {
+      "success": {
+       "mean": 0.9986979166666666,
+       "min": 0.99609375,
+       "max": 1.0
+      },
+      "crash": {
+       "mean": 0.0,
+       "min": 0.0,
+       "max": 0.0
+      }
+     },
+     "0.40": {
+      "success": {
+       "mean": 0.11458333333333333,
+       "min": 0.0078125,
+       "max": 0.2109375
+      },
+      "crash": {
+       "mean": 0.09375,
+       "min": 0.00390625,
+       "max": 0.15234375
+      }
+     },
+     "0.45": {
+      "success": {
+       "mean": 0.0,
+       "min": 0.0,
+       "max": 0.0
+      },
+      "crash": {
+       "mean": 0.86328125,
+       "min": 0.66796875,
+       "max": 1.0
+      }
+     },
+     "0.50": {
+      "success": {
+       "mean": 0.0,
+       "min": 0.0,
+       "max": 0.0
+      },
+      "crash": {
+       "mean": 0.99609375,
+       "min": 0.98828125,
+       "max": 1.0
+      }
+     },
+     "0.70": {
+      "success": {
+       "mean": 0.0,
+       "min": 0.0,
+       "max": 0.0
+      },
+      "crash": {
+       "mean": 0.9973958333333334,
+       "min": 0.9921875,
+       "max": 1.0
+      }
+     }
+    },
+    "success_040": 0.11458333333333333,
+    "crash_040_050": 0.6510416666666666
+   },
+   "flown_ranks": {
+    "1": {
+     "success_040": 8,
+     "crash_040_050": 1
+    },
+    "2": {
+     "success_040": 6,
+     "crash_040_050": 7
+    },
+    "3": {
+     "success_040": 4,
+     "crash_040_050": 9
+    }
+   },
+   "reading": {
+    "gaps": {
+     "success_040": -0.03307291666666666,
+     "crash_040_050": -0.02213541666666674
+    },
+    "representative": true
+   }
+  },
+  "blanking": {
+   "groups": {
+    "none": {
+     "0.00": {
+      "success": 1.0,
+      "crash": 0.0,
+      "per_seed_success": {
+       "1": 1.0,
+       "2": 1.0,
+       "3": 1.0
+      }
+     },
+     "0.35": {
+      "success": 1.0,
+      "crash": 0.0,
+      "per_seed_success": {
+       "1": 1.0,
+       "2": 1.0,
+       "3": 1.0
+      }
+     },
+     "0.40": {
+      "success": 0.12369791666666667,
+      "crash": 0.11328125,
+      "per_seed_success": {
+       "1": 0.015625,
+       "2": 0.12890625,
+       "3": 0.2265625
+      }
+     }
+    },
+    "attitude": {
+     "0.00": {
+      "success": 1.0,
+      "crash": 0.0,
+      "per_seed_success": {
+       "1": 1.0,
+       "2": 1.0,
+       "3": 1.0
+      }
+     },
+     "0.35": {
+      "success": 1.0,
+      "crash": 0.0,
+      "per_seed_success": {
+       "1": 1.0,
+       "2": 1.0,
+       "3": 1.0
+      }
+     },
+     "0.40": {
+      "success": 0.109375,
+      "crash": 0.16145833333333334,
+      "per_seed_success": {
+       "1": 0.015625,
+       "2": 0.04296875,
+       "3": 0.26953125
+      }
+     }
+    },
+    "rates_accel": {
+     "0.00": {
+      "success": 1.0,
+      "crash": 0.0,
+      "per_seed_success": {
+       "1": 1.0,
+       "2": 1.0,
+       "3": 1.0
+      }
+     },
+     "0.35": {
+      "success": 1.0,
+      "crash": 0.0,
+      "per_seed_success": {
+       "1": 1.0,
+       "2": 1.0,
+       "3": 1.0
+      }
+     },
+     "0.40": {
+      "success": 0.15755208333333334,
+      "crash": 0.078125,
+      "per_seed_success": {
+       "1": 0.015625,
+       "2": 0.22265625,
+       "3": 0.234375
+      }
+     }
+    },
+    "velocity": {
+     "0.00": {
+      "success": 1.0,
+      "crash": 0.0,
+      "per_seed_success": {
+       "1": 1.0,
+       "2": 1.0,
+       "3": 1.0
+      }
+     },
+     "0.35": {
+      "success": 1.0,
+      "crash": 0.0,
+      "per_seed_success": {
+       "1": 1.0,
+       "2": 1.0,
+       "3": 1.0
+      }
+     },
+     "0.40": {
+      "success": 0.033854166666666664,
+      "crash": 0.12109375,
+      "per_seed_success": {
+       "1": 0.015625,
+       "2": 0.01953125,
+       "3": 0.06640625
+      }
+     }
+    },
+    "altitude": {
+     "0.00": {
+      "success": 1.0,
+      "crash": 0.0,
+      "per_seed_success": {
+       "1": 1.0,
+       "2": 1.0,
+       "3": 1.0
+      }
+     },
+     "0.35": {
+      "success": 0.9986979166666666,
+      "crash": 0.0,
+      "per_seed_success": {
+       "1": 0.99609375,
+       "2": 1.0,
+       "3": 1.0
+      }
+     },
+     "0.40": {
+      "success": 0.08072916666666667,
+      "crash": 0.14713541666666666,
+      "per_seed_success": {
+       "1": 0.01953125,
+       "2": 0.06640625,
+       "3": 0.15625
+      }
+     }
+    },
+    "position_error": {
+     "0.00": {
+      "success": 1.0,
+      "crash": 0.0,
+      "per_seed_success": {
+       "1": 1.0,
+       "2": 1.0,
+       "3": 1.0
+      }
+     },
+     "0.35": {
+      "success": 0.9986979166666666,
+      "crash": 0.0,
+      "per_seed_success": {
+       "1": 0.99609375,
+       "2": 1.0,
+       "3": 1.0
+      }
+     },
+     "0.40": {
+      "success": 0.06770833333333333,
+      "crash": 0.13802083333333334,
+      "per_seed_success": {
+       "1": 0.01953125,
+       "2": 0.13671875,
+       "3": 0.046875
+      }
+     }
+    },
+    "attitude_rates_accel": {
+     "0.00": {
+      "success": 1.0,
+      "crash": 0.0,
+      "per_seed_success": {
+       "1": 1.0,
+       "2": 1.0,
+       "3": 1.0
+      }
+     },
+     "0.35": {
+      "success": 1.0,
+      "crash": 0.0,
+      "per_seed_success": {
+       "1": 1.0,
+       "2": 1.0,
+       "3": 1.0
+      }
+     },
+     "0.40": {
+      "success": 0.13932291666666666,
+      "crash": 0.10807291666666667,
+      "per_seed_success": {
+       "1": 0.015625,
+       "2": 0.1328125,
+       "3": 0.26953125
+      }
+     }
+    },
+    "flight_state": {
+     "0.00": {
+      "success": 1.0,
+      "crash": 0.0,
+      "per_seed_success": {
+       "1": 1.0,
+       "2": 1.0,
+       "3": 1.0
+      }
+     },
+     "0.35": {
+      "success": 0.9895833333333334,
+      "crash": 0.0,
+      "per_seed_success": {
+       "1": 0.96875,
+       "2": 1.0,
+       "3": 1.0
+      }
+     },
+     "0.40": {
+      "success": 0.0026041666666666665,
+      "crash": 0.19401041666666666,
+      "per_seed_success": {
+       "1": 0.0078125,
+       "2": 0.0,
+       "3": 0.0
+      }
+     }
+    },
+    "detector": {
+     "0.00": {
+      "success": 1.0,
+      "crash": 0.0,
+      "per_seed_success": {
+       "1": 1.0,
+       "2": 1.0,
+       "3": 1.0
+      }
+     },
+     "0.35": {
+      "success": 1.0,
+      "crash": 0.0,
+      "per_seed_success": {
+       "1": 1.0,
+       "2": 1.0,
+       "3": 1.0
+      }
+     },
+     "0.40": {
+      "success": 0.16927083333333334,
+      "crash": 0.11328125,
+      "per_seed_success": {
+       "1": 0.1015625,
+       "2": 0.171875,
+       "3": 0.234375
+      }
+     }
+    },
+    "mission_progress": {
+     "0.00": {
+      "success": 1.0,
+      "crash": 0.0,
+      "per_seed_success": {
+       "1": 1.0,
+       "2": 1.0,
+       "3": 1.0
+      }
+     },
+     "0.35": {
+      "success": 0.9973958333333334,
+      "crash": 0.0,
+      "per_seed_success": {
+       "1": 0.9921875,
+       "2": 1.0,
+       "3": 1.0
+      }
+     },
+     "0.40": {
+      "success": 0.032552083333333336,
+      "crash": 0.14973958333333334,
+      "per_seed_success": {
+       "1": 0.0,
+       "2": 0.08984375,
+       "3": 0.0078125
+      }
+     }
+    },
+    "previous_action": {
+     "0.00": {
+      "success": 1.0,
+      "crash": 0.0,
+      "per_seed_success": {
+       "1": 1.0,
+       "2": 1.0,
+       "3": 1.0
+      }
+     },
+     "0.35": {
+      "success": 1.0,
+      "crash": 0.0,
+      "per_seed_success": {
+       "1": 1.0,
+       "2": 1.0,
+       "3": 1.0
+      }
+     },
+     "0.40": {
+      "success": 0.13541666666666666,
+      "crash": 0.09765625,
+      "per_seed_success": {
+       "1": 0.05859375,
+       "2": 0.1015625,
+       "3": 0.24609375
+      }
+     }
+    }
+   },
+   "complete": true,
+   "expected": 11,
+   "calibration": {
+    "checks": [
+     {
+      "mask": "none",
+      "isaac": 0.12369791666666667,
+      "px4": 0.20525103980986334,
+      "lo": 0.04931669637551991,
+      "hi": 0.4234221813725488,
+      "inside": true
+     },
+     {
+      "mask": "rates_accel",
+      "isaac": 0.15755208333333334,
+      "px4": 0.255050505050505,
+      "lo": 0.0625,
+      "hi": 0.5050505050505051,
+      "inside": true
+     },
+     {
+      "mask": "attitude",
+      "isaac": 0.109375,
+      "px4": 0.26262626262626265,
+      "lo": 0.06060606060606061,
+      "hi": 0.5656565656565656,
+      "inside": true
+     }
+    ],
+    "passed": true
+   },
+   "reading": {
+    "by_group": {
+     "attitude": "not needed",
+     "rates_accel": "not needed",
+     "velocity": "carries the fault signal",
+     "altitude": "not needed",
+     "position_error": "not needed",
+     "attitude_rates_accel": "not needed",
+     "flight_state": "carries the fault signal",
+     "detector": "not needed",
+     "mission_progress": "carries the fault signal",
+     "previous_action": "not needed"
+    },
+    "attribution": true,
+    "label": null
+   },
+   "repeat": {
+    "by_seed": {
+     "1": {
+      "0.00": {
+       "scores": 1.0,
+       "rerun": 1.0
+      },
+      "0.35": {
+       "scores": 0.99609375,
+       "rerun": 1.0
+      },
+      "0.40": {
+       "scores": 0.0078125,
+       "rerun": 0.015625
+      }
+     },
+     "2": {
+      "0.00": {
+       "scores": 1.0,
+       "rerun": 1.0
+      },
+      "0.35": {
+       "scores": 1.0,
+       "rerun": 1.0
+      },
+      "0.40": {
+       "scores": 0.125,
+       "rerun": 0.12890625
+      }
+     },
+     "3": {
+      "0.00": {
+       "scores": 1.0,
+       "rerun": 1.0
+      },
+      "0.35": {
+       "scores": 1.0,
+       "rerun": 1.0
+      },
+      "0.40": {
+       "scores": 0.2109375,
+       "rerun": 0.2265625
+      }
+     }
+    },
+    "max_difference": 0.015625
+   }
+  }
+ }
+}

@@ -1,16 +1,16 @@
 // The story page: numbers, the hero replay, the severity explainer, the
 // charts, the featured flights and the clips. Counts shown here are sums of
 // counts in the results files; every rate is read as it was written.
-import { $, OUTCOMES, conditionColour, conditionLabel, data, escapeHtml, fillNumbers, initTheme, int, pct, pct0, range } from "./common.js";
+import { $, OUTCOMES, conditionColour, conditionLabel, data, escapeHtml, fillNumbers, initTheme, int, pct, pct0, pts, range } from "./common.js";
 import { Replay, mountPlayer } from "./replay.js";
 import { Timelines } from "./timelines.js";
 import * as charts from "./charts.js";
 
 initTheme();
-const [site, m10, m11, featured, film, training] = await Promise.all([
-  data.site(), data.m10(), data.m11(), data.featured(), data.film(), data.training()]);
+const [site, m10, m11, m13, featured, film, training] = await Promise.all([
+  data.site(), data.m10(), data.m11(), data.m13(), data.featured(), data.film(), data.training()]);
 const featuredById = Object.fromEntries(featured.map((f) => [f.id, f]));
-fillNumbers({ site, m10, m11, training });
+fillNumbers({ site, m10, m11, m13, training });
 
 const cap = (s) => s.charAt(0).toUpperCase() + s.slice(1);
 
@@ -39,6 +39,32 @@ const td = ["c2", "c3", "c4"].map((c) => m10.descriptive[c]?.median_touchdown_sp
 $("#td-45").textContent = `${Math.min(...td).toFixed(1)}–${Math.max(...td).toFixed(1)} m/s`;
 const t = m10.transfer_agreement.mission_success;
 $("#transfer-miss").textContent = `${t.cells - t.agree} of ${t.cells}`;
+const bonf = m13.multiplicity.main;
+$("#n-bonf-holds").textContent = bonf.comparisons.filter((c) => c.holds).length;
+$("#bonf-level").textContent = `${(100 * bonf.level).toFixed(1)}%`;
+const spread = m13.isaac.seed_spread;
+$("#n-seeds").textContent = Object.keys(spread.seeds).length;
+$("#n-seeds-pass").textContent = Object.values(spread.seeds).filter((s) => s.gate_passed).length;
+
+// The Isaac diagnostics' readings: each sentence states the outcome of a
+// rule frozen in configs/rl/diagnostics_v1.yaml, as results/m13 applied it.
+const sr = spread.reading;
+$("#seed-reading").textContent = !sr ? "" : sr.representative
+  ? `Within 5 points of the ${Object.keys(spread.seeds).length}-seed average on success at 40% and on crashes at 40–50%, so by the rule set before training the flown three are typical of the recipe.`
+  : `They differ from the ${Object.keys(spread.seeds).length}-seed average by ${pts(sr.gaps.success_040)} points on success at 40% and ${pts(sr.gaps.crash_040_050)} on crashes at 40–50%, so the PX4 results likely carry that bias.`;
+const bl = m13.isaac.blanking;
+if (bl?.complete) {
+  const names = (label) => Object.entries(bl.reading.by_group).filter(([, r]) => r === label).map(([g]) => charts.INPUT_GROUPS[g] ?? g);
+  const list = (xs) => (xs.length <= 1 ? xs.join("") : `${xs.slice(0, -1).join(", ")} and ${xs.at(-1)}`);
+  const carry = names("carries the fault signal");
+  const fly = names("needed to fly");
+  $("#blank-reading").textContent = !bl.reading.attribution
+    ? "Isaac did not first reproduce PX4's own blanking results, so by the rule fixed in advance the chart is inconclusive."
+    : "Isaac first reproduced PX4's own blanking results. " +
+      (carry.length ? `Blanking ${list(carry)} at least halves its success at 40%: that is where it reads the fault.`
+        : "No single group halves its success at 40%: the signal is spread across its inputs.") +
+      (fly.length ? ` Without ${list(fly)} it cannot fly even a healthy mission.` : "");
+}
 
 // ------------------------------------------------------------ hero replay
 
@@ -123,6 +149,8 @@ charts.chart($("#ch-transfer-success"), charts.transfer($("#ch-transfer-success"
 charts.chart($("#ch-transfer-crash"), charts.transfer($("#ch-transfer-crash"), m10, site, "crash"));
 charts.chart($("#ch-touchdown"), charts.touchdown($("#ch-touchdown"), m10, site));
 charts.chart($("#ch-training"), charts.training($("#ch-training"), training, site));
+charts.chart($("#ch-seeds"), charts.seedSpread($("#ch-seeds"), m13, site));
+charts.chart($("#ch-blanking"), charts.blanking($("#ch-blanking"), m13));
 charts.chart($("#ch-generalization"), charts.generalization(m11));
 
 // ------------------------------------------------------------ featured flights

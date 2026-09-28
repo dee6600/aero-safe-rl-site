@@ -30,6 +30,7 @@
         <a class="optional" href="#how">How it works</a>
         <a href="#results">Results</a>
         <a class="optional" href="#limits">Limits</a>
+        <a class="optional" href="#checks">Checks</a>
         <a href="explorer.html">Flight explorer</a>
       </nav>
       <button class="icon-btn" type="button" data-theme-toggle></button>
@@ -227,8 +228,9 @@
           </div>
           <div class="chart-card" style="margin:0">
             <h3>Training in Isaac Sim</h3>
-            <p class="takeaway">Three training seeds, each <span data-num="training:updates.train_v3_seed_1"></span> updates on
-              <span data-num="training:num_envs.0|int"></span> drones. Their curves end within a few points of each other, yet on PX4
+            <p class="takeaway">The three training seeds flown on PX4, each <span data-num="training:updates.train_v3_seed_1"></span> updates on
+              <span data-num="training:num_envs.0|int"></span> drones, and in grey seven more trained the same way to check they are typical
+              (<a href="#checks">below</a>). The three curves end within a few points of each other, yet on PX4
               at 40% they finish <b data-num="m10:main.c4.0.40.mission_success.per_seed.v3_seed_1|pct"></b>,
               <b data-num="m10:main.c4.0.40.mission_success.per_seed.v3_seed_2|pct"></b> and
               <b data-num="m10:main.c4.0.40.mission_success.per_seed.v3_seed_3|pct"></b>. A training curve alone does not say which policy will do best.</p>
@@ -327,8 +329,64 @@
       </div>
     </section>
 
+    <!-- ============================================================ checks -->
+    <section id="checks">
+      <div class="wrap">
+        <div class="section-head">
+          <span class="eyebrow">Checked again</span>
+          <h2 style="margin-top:12px">Before the paper, every verdict was re-tested</h2>
+          <p>None of these checks was fixed before flying, so none is a new verdict. Each asks whether the results above survive a
+            harder look.</p>
+        </div>
+        <div class="grid-2">
+          <div class="card"><h3>A stricter bar</h3>
+            <p class="ink-2">Ten comparisons tested at once deserve a stricter standard. Held to <span id="bonf-level"></span> intervals
+              instead of 95%, <b id="n-bonf-holds"></b> still hold. At 40% the corrected intervals start just above zero:
+              <span data-num="m13:multiplicity.main.comparisons.4.lo|pts"></span> and
+              <span data-num="m13:multiplicity.main.comparisons.5.lo|pts"></span> points.</p></div>
+          <div class="card"><h3>Where the crash line is drawn</h3>
+            <p class="ink-2">At the <span data-num="site:outcome_spec.crash_touchdown_speed_m_s"></span> m/s line fixed in advance, the
+              learned policy does not crash less than no recovery. Count every touchdown above 1.5 m/s as a crash and it does,
+              <span data-num="m13:crash_speed.1.5.comparisons.2|diff"></span>, because it comes down more softly. At 2.5 m/s it
+              does not.</p></div>
+          <div class="card"><h3>PX4's silence, recounted</h3>
+            <p class="ink-2">Counting only faults the plugin confirmed had begun, PX4's own failure detector stayed silent on
+              <b><span data-num="m13:px4_detector.confirmed_only.0.silent"></span> of <span data-num="m13:px4_detector.confirmed_only.0.n"></span></b>
+              flights with the rotor 20–40% weaker, and still on <span data-num="m13:px4_detector.confirmed_only.3.silent"></span> of
+              <span data-num="m13:px4_detector.confirmed_only.3.n"></span> at 80–100%.</p></div>
+          <div class="card"><h3>Every number regenerates</h3>
+            <p class="ink-2">One command re-derives every number in the paper from the archived flight logs, on a fresh copy of the
+              code, and compares each with the published files. Every one matched
+              (<a href="https://github.com/dee6600/aero-safe-rl/blob/main/docs/reproduce.md">how to reproduce</a>).</p></div>
+        </div>
+
+        <div class="chart-card" style="margin-top:24px">
+          <h3>Are the three flown seeds typical?</h3>
+          <p class="takeaway"><span id="n-seeds"></span> seeds trained with the same recipe, <span id="n-seeds-pass"></span> of them passing
+            the check a policy must pass before it may fly on PX4. Rotor 40% weaker, they finish
+            <b data-num="m13:isaac.seed_spread.all.success_040|pct"></b> of missions on average in Isaac; the three flown on PX4,
+            <b data-num="m13:isaac.seed_spread.flown.success_040|pct"></b>. <span id="seed-reading"></span></p>
+          <div class="chart" id="ch-seeds"></div>
+          <p class="source"><span class="tag train">Isaac Lab diagnostic, not a result</span> Dots: each seed, the three flown on PX4
+            in colour. Ticks: the mean of all seeds (grey) and of the flown three (colour). Rule fixed before training:
+            <code>configs/rl/diagnostics_v1.yaml</code>. Source: <code>results/m13/results.json</code>, <code>isaac.seed_spread</code>.</p>
+        </div>
+
+        <div class="chart-card">
+          <h3>What does the policy sense the fault from?</h3>
+          <p class="takeaway">The policy barely uses the fault detector, so it must read the fault from how the drone flies. To find which
+            inputs, each group was blanked in turn and the three flown seeds flown again in Isaac. <span id="blank-reading"></span></p>
+          <div class="chart" id="ch-blanking"></div>
+          <p class="source"><span class="tag train">Isaac Lab diagnostic, not a result</span> Bars: the three seeds' mean; ticks: each seed.
+            Red: carries the fault signal; amber: needed to fly at all; grey: neither. Solid line: nothing blanked; dashed: half
+            of that. Rule fixed before any run: <code>configs/rl/diagnostics_v1.yaml</code>.
+            Source: <code>results/m13/results.json</code>, <code>isaac.blanking</code>.</p>
+        </div>
+      </div>
+    </section>
+
     <!-- ============================================================ engineering -->
-    <section id="engineering">
+    <section id="engineering" class="alt">
       <div class="wrap">
         <div class="section-head">
           <span class="eyebrow">Engineering</span>
@@ -336,7 +394,8 @@
         </div>
         <div class="grid-3">
           <div class="card"><h3>One simulator per drone</h3><p class="ink-2">Every worker gets its own Gazebo server, clock and
-            identity file. Nobody shares a world, so one crash never poisons another flight.</p></div>
+            identity file. Nobody shares a world, so one crash never poisons another flight. A test kills one autopilot
+            mid-flight and checks the other flies on.</p></div>
           <div class="card"><h3><span id="n-planned-all"></span> planned flights</h3><p class="ink-2">Flown on a laptop and
             spot cloud machines, two simulators each. <span id="n-lost"></span> were lost to worker restarts and are reported,
             not hidden.</p></div>
